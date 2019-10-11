@@ -21,10 +21,12 @@ Clustering Analysis by K-means: (13 points)
 - Choice of attributes and distance function (1 points)
 - Identification of the best value of k (5 points)
 - Characterization of the obtained clusters by using both analysis of the k centroids and comparison of the distribution of variables within the clusters and that in the whole dataset (7 points)
+
 Analysis by density-based clustering (9 points)
 - Choice of attributes and distance function (2 points)
 - Study of the clustering parameters (2 points)
 - Characterization and interpretation of the obtained clusters (5 points)
+
 Analysis by hierarchical clustering (5 points)
 - Choice of attributes and distance function (2 points)
 - Show and discuss different dendograms using different algorithms (3 points)
