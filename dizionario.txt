@@ -35,7 +35,7 @@ KickDate				Date the vehicle was kicked back to the auction (mancante)
 BYRNO					Unique number assigned to the buyer that purchased the vehicle
 VNZIP                                   Zipcode where the car was purchased (si chiama vnzip1)
 VNST                                    State where the the car was purchased
-VehBCost				Acquisition cost paid for the vehicle at time of purchase (asta o concessionario? probabilmente asta)
+VehBCost				Acquisition cost paid for the vehicle at time of purchase (asta)
 IsOnlineSale				Identifies if the vehicle was originally purchased online
 WarrantyCost                            Warranty price (term=36month  and millage=36K) costo della garanzia fino a 36 mesi o 36000 km
 
