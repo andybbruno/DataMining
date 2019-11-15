@@ -30,6 +30,7 @@ for col in list(training):
     if (coltype == "object"):
         combined = pd.concat([training, test])
         df = pd.get_dummies(combined[col])
+        combined = combined.drop(col, axis=1)
         combined = pd.concat([combined, df], axis=1)
 
 train_df = combined[combined['isTraining'] == 1]
