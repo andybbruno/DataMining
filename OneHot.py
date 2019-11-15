@@ -13,7 +13,7 @@ from sklearn.metrics import confusion_matrix
 df = pd.read_csv('training_cleaned.csv')
 df.drop(df.columns[0], axis=1, inplace=True)
 df.drop(columns=['RefId', 'PurchDate', 'Make', 'IsOnlineSale', 'Transmission',
-                 'Nationality', 'IsBase', 'WheelTypeID', 'Model'], inplace=True)
+                 'Nationality', 'IsBase', 'WheelTypeID'], inplace=True)
 
 
 y = df['IsBadBuy']
@@ -39,7 +39,7 @@ print(X.shape)
 df = pd.read_csv('test_cleaned.csv')
 df.drop(df.columns[0], axis=1, inplace=True)
 df.drop(columns=['RefId', 'PurchDate', 'Make', 'IsOnlineSale', 'Transmission',
-                 'Nationality', 'IsBase', 'WheelTypeID', 'Model'], inplace=True)
+                 'Nationality', 'IsBase', 'WheelTypeID'], inplace=True)
 
 
 y = df['IsBadBuy']
