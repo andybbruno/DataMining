@@ -88,6 +88,7 @@ def clean_file(file = "training"):
     df['Color'].fillna(df['Color'].mode()[0], inplace=True) #Sostituisco con la moda che è silver
     df['Size'] = df.groupby(['Make']).Size.apply(lambda x: x.fillna(x.mode()[0]))
     df['SubModel'] = df.groupby([df['Make'], df['Model']]).Size.apply(lambda x: x.fillna(x.mode()[0]))
+    df['Trim'] = df.groupby(['Make']).Size.apply(lambda x: x.fillna(x.mode()[0])) # added for andrea
 
     tresh = 1000
     if file == "training":
@@ -119,10 +120,20 @@ def clean_file(file = "training"):
     else:
         new_df = df
 
-    new_df.drop(columns=['Trim', 'WheelType', 'PRIMEUNIT', 'AUCGUART', 'VehYear', 'VNZIP1', 'VNST'], inplace=True)
+    # new_df.drop(columns=['Trim', 'WheelType', 'PRIMEUNIT', 'AUCGUART', 'VehYear', 'VNZIP1', 'VNST'], inplace=True)
+    new_df.drop(columns=['WheelType', 'PRIMEUNIT', 'AUCGUART', 'VehYear', 'VNZIP1'], inplace=True)
     
     if file == "training":
         new_df.dropna(inplace=True)
+    else:
+        new_df['CAAP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['CRAP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['CACP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['CRCP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['AAAP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['ARAP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['AACP'].fillna(new_df['VehBCost'],inplace=True)
+        new_df['ARCP'].fillna(new_df['VehBCost'],inplace=True)
 
     sost_auct = []
     sost_ret = []
@@ -206,7 +217,7 @@ def clean_file(file = "training"):
     new_df['RetailAVG'] = sost_ret
     new_df['Trend'] = trend
 
-    new_df.drop(columns=['AAAP', 'AACP', 'CAAP', 'CACP', 'ARAP', 'ARCP', 'CRAP', 'CRCP'], inplace=True)
+    #new_df.drop(columns=['AAAP', 'AACP', 'CAAP', 'CACP', 'ARAP', 'ARCP', 'CRAP', 'CRCP'], inplace=True)
 
     if file == "training":
         new_df.to_csv('training_cleaned.csv')
