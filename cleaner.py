@@ -87,7 +87,7 @@ def clean_file(file = "training"):
     df['Transmission'].fillna(df['Transmission'].mode()[0], inplace=True)
     df['Color'].fillna(df['Color'].mode()[0], inplace=True) #Sostituisco con la moda che è silver
     df['Size'] = df.groupby(['Make']).Size.apply(lambda x: x.fillna(x.mode()[0]))
-    df['SubModel'] = df.groupby([df['Make'], df['Model']]).Size.apply(lambda x: x.fillna(x.mode()[0]))
+    df['SubModel'] = df.groupby([df['Make'], df['Model']]).SubModel.apply(lambda x: x.fillna(x.mode()[0]))
     df['Trim'] = df.groupby(['Make']).Size.apply(lambda x: x.fillna(x.mode()[0])) # added for andrea
 
     tresh = 1000
