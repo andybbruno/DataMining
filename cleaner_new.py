@@ -21,6 +21,17 @@ def main():
     df = pd.concat([df_train, df_test])
     assert len(df_train) + len(df_test) == len(df)
 
+    df.rename(columns={ 
+            'MMRAcquisitionAuctionAveragePrice':'AAAP',
+            'MMRAcquisitionRetailAveragePrice':'ARAP',
+            'MMRCurrentAuctionAveragePrice':'CAAP',
+            'MMRCurrentRetailAveragePrice':'CRAP',
+            'MMRAcquisitionAuctionCleanPrice': 'AACP',
+            'MMRAcquisitonRetailCleanPrice': 'ARCP',
+            'MMRCurrentAuctionCleanPrice': 'CACP',
+            'MMRCurrentRetailCleanPrice': 'CRCP'
+        },inplace=True)
+
     df['PurchDate'] = pd.to_datetime(df['PurchDate'], infer_datetime_format=True)
     year = []
     month = []
@@ -35,7 +46,7 @@ def main():
     df['PurchMonth'] = month
     df['PurchDay'] = day
     df['PurchWeekDay'] = week_day
-    #TODO categorize and add new variables
+    
     df['Make'] = np.where(df['Make'] == 'TOYOTA SCION', 'SCION', df['Make'])
     df['Make'] = np.where(df['Make'] == 'HUMMER', 'GMC',  df['Make'])
     df['Make'] = np.where(df['Make'] == 'PLYMOUTH', 'DODGE',  df['Make'])
@@ -45,17 +56,19 @@ def main():
     df['Transmission'].fillna('AUTO', inplace=True)
     df['WheelType'].fillna('NULL', inplace=True)
 
-    #df['Nationality'] = df.groupby(['Make']).Nationality.apply(lambda x: x.fillna(x.mode()[0]))
     df['Nationality'] = np.where(df['Make'] == 'HYUNDAI', 'OTHER ASIAN', df['Nationality'])
+    df['Nationality'] = np.where(df['Make'] == 'TOYOTA', 'TOP LINE ASIAN', df['Nationality'])
     df['Nationality'].fillna('AMERICAN', inplace=True)
-    df['Size'].fillna('NULL', inplace=True)
+    df['Size'].fillna('NULL', inplace=True)    
 
-    
+    df.drop(index = [40998], inplace=True)
+    train_ids.remove(40998)
 
-    #df['Trim'] = df['Trim'].astype('category')
+    df.drop(columns=['WheelTypeID'], inplace=True)
 
     test_cleaned = df[df.RefId.isin(test_ids)]
     train_cleaned = df[df.RefId.isin(train_ids)]
+
     #train_cleaned.to_csv('new_train_cleaned.csv')
     #test_cleaned.to_csv('new_test_cleaned.csv')
     
