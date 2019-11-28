@@ -61,8 +61,9 @@ def main():
     df['Nationality'].fillna('AMERICAN', inplace=True)
     df['Size'].fillna('NULL', inplace=True)    
 
-    df.drop(index = [40998], inplace=True)
-    train_ids.remove(40998)
+    to_drop = df[df['VehBCost'] < 2].index.values
+    df.drop(index = to_drop, inplace=True)
+    train_ids.remove(to_drop)
 
     df.drop(columns=['WheelTypeID'], inplace=True)
 
