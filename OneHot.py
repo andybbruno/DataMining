@@ -24,17 +24,17 @@ test.drop(columns=['RefId', 'PurchDate', 'Make', 'IsOnlineSale', 'Transmission',
 
 training['isTraining'] = 1
 test['isTraining'] = 0
-
+        
+combined = pd.concat([training, test])
 for col in list(training):
     coltype = str(training[col].dtype)
     if (coltype == "object"):
-        combined = pd.concat([training, test])
         df = pd.get_dummies(combined[col])
         combined = combined.drop(col, axis=1)
-        combined = pd.concat([combined, df], axis=1)
+        tmp = pd.concat([combined, df], axis=1)
 
-train_df = combined[combined['isTraining'] == 1]
-test_df = combined[combined['isTraining'] == 0]
+train_df = tmp[tmp['isTraining'] == 1]
+test_df = tmp[tmp['isTraining'] == 0]
 train = train_df.drop(['isTraining'], axis=1)
 test = test_df.drop(['isTraining'], axis=1)
 
