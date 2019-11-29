@@ -16,7 +16,7 @@ import sys
 import re
 import random
 
-
+from sklearn.preprocessing import LabelEncoder
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from collections import Counter
@@ -153,22 +153,6 @@ def main():
             df['Model'] = np.where(df['Model'] == line, res, df['Model'])
             df.loc[df['Model'] == line] = res
 
-    ################################## DATA IMPUTATION ################################## 
-    # TODO 
-    # Impute works only with numbers.
-    df_test = df[['AAAP', 'CACP', 'ARAP', 'CRAP', 'AACP', 'CACP', 'ARCP', 'CRCP']]
-    # print(df_test.isna().sum())
-    # ids = pd.isnull(df_test).any(axis=1)
-    imp = IterativeImputer(max_iter=20, random_state=random.randint(0,1000), sample_posterior=True, verbose=True)
-    imp.fit(df_test)
-    res = imp.transform(df_test)
-    # print(pd.DataFrame(res[ids], columns = ['AAAP', 'CACP', 'ARAP', 'CRAP', 'AACP', 'CACP', 'ARCP', 'CRCP']))
-
-
-    df['Trim'].fillna('Bas', inplace=True)
-    df['Color'].fillna('NOT AVAIL', inplace=True)
-    df['Transmission'].fillna('AUTO', inplace=True)
-    df['WheelType'].fillna('NULL', inplace=True)
 
     df['Nationality'] = np.where(
         df['Make'] == 'HYUNDAI', 'OTHER ASIAN', df['Nationality'])
@@ -177,17 +161,54 @@ def main():
     df['Nationality'].fillna('AMERICAN', inplace=True)
     df['Size'].fillna('NULL', inplace=True)
 
+
+    # REMOVING WEIRD OUTLIERS
     to_drop = df[df['VehBCost'] < 2].index.values
     df.drop(index=to_drop, inplace=True)
     train_ids.remove(to_drop)
 
+    # REMOVING USELESS COLUMN
     df.drop(columns=['WheelTypeID'], inplace=True)
+    df.drop(columns=['PRIMEUNIT'], inplace=True)
+    df.drop(columns=['AUCGUART'], inplace=True)
+    df.drop(columns=['OldModel'], inplace=True)
 
+
+    # FILL NAN WITH A DEFAULT CATEGORY
+    df['Trim'].fillna('Bas', inplace=True)
+    df['Color'].fillna('NOT AVAIL', inplace=True)
+    df['Transmission'].fillna('AUTO', inplace=True)
+    df['WheelType'].fillna('NULL', inplace=True)
+    df['TopThreeAmericanName'].fillna(str(df['TopThreeAmericanName'].mode()[0]), inplace=True)
+    
+
+
+    ################################## ENCODING ##################################
+    # TODO SUBMODEL
+    df.drop(columns=['SubModel'], inplace=True)
+
+    for col in list(df):
+        coltype = str(df[col].dtype)
+        if (coltype == "object"):
+            df[col] = LabelEncoder().fit_transform(df[col])
+
+    # Save Test Set
     test_cleaned = df[df.RefId.isin(test_ids)]
+     # test_cleaned.to_csv('new_test_cleaned.csv')
+
+    # On the Training Set we do the imputation
     train_cleaned = df[df.RefId.isin(train_ids)]
 
+    ################################## DATA IMPUTATION ################################## 
+    print(train_cleaned.isna().sum())
+
+    columns = train_cleaned.columns
+    
+    imp = IterativeImputer(max_iter=100, random_state=random.randint(0,1000), sample_posterior=True, verbose=True)
+    imp.fit(train_cleaned)
+    res = imp.transform(train_cleaned)
+    train_cleaned = pd.DataFrame(res , columns=columns)
     # train_cleaned.to_csv('new_train_cleaned.csv')
-    # test_cleaned.to_csv('new_test_cleaned.csv')
 
 
 if __name__ == "__main__":
