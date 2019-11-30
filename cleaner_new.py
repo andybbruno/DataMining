@@ -325,7 +325,9 @@ def main():
 
     
     df['NumDoors'] = 0
+    df['NumDoors'] = np.where(df.SubModel.str.contains(".*5D.*"), 4, df['NumDoors'])
     df['NumDoors'] = np.where(df.SubModel.str.contains(".*4D.*"), 4, df['NumDoors'])
+    df['NumDoors'] = np.where(df.SubModel.str.contains(".*3D.*"), 4, df['NumDoors'])
     df['NumDoors'] = np.where(df.SubModel.str.contains(".*2D.*"), 4, df['NumDoors'])
     
     #TODO 
