@@ -87,6 +87,22 @@ def main():
             df['EngineLiters'] = np.where(df['Model'] == line, str(val), df['EngineLiters'])
             df['Model'] = np.where(df['Model'] == line, res, df['Model'])
 
+
+    # SUBMODEL CONTAINS INFO ABOUT LITERS AS WELL
+    uniques = df['SubModel'].unique()
+    regexLiters = "( \d[.]\dL| \d[.]\d| [\/]\d[.]\dL|-\d[.]\dL)"
+
+    for line in uniques:
+        print("\t", list(uniques).index(line), " of ", len(uniques), end="\r")
+
+        if(re.findall(regexLiters, line)):
+            res = re.sub(regexLiters, '', line)
+            val = float(re.findall(r"(\d.\d)", re.findall(regexLiters, line)[0])[0])
+
+            # print(line , " - " , re.findall(regexLiters, line), " - " , val)
+
+            df['EngineLiters'] = np.where(df['SubModel'] == line, str(val), df['EngineLiters'])
+
     ########################################################################
 
     print("\nCylinders\n")
@@ -387,38 +403,40 @@ def main():
     df['Nationality'] = np.where(df.Make.str.contains("VOLKSWAGEN"),"EUROPEAN", df['Nationality'])
     df['Nationality'] = np.where(df.Make.str.contains("VOLVO"),"EUROPEAN", df['Nationality'])
 
-
-    df['Make'] = np.where(df.Make.str.contains("ACURA"),"HONDA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("BUICK"),"GM", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("CADILLAC"),"GM", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("CHEVROLET"),"GM", df['Make']) 
-    df['Make'] = np.where(df.Make.str.contains("CHRYSLER"),"CHRYSLER", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("DODGE"),"CHRYSLER", df['Make']) 
-    df['Make'] = np.where(df.Make.str.contains("FORD"),"FORD", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("GMC"),"GMC", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("HONDA"),"HONDA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("HYUNDAI"),"HYUNDAI", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("INFINITI"),"NISSAN", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("ISUZU"),"ISUZU", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("JEEP"),"CHRYSLER", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("KIA"),"KIA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("LEXUS"),"TOYOTA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("LINCOLN"),"FORD", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("MAZDA"),"MAZDA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("MERCURY"),"FORD", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("MINI"),"BMW", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("MITSUBISHI"),"MITSUBISHI", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("NISSAN"),"NISSAN", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("OLDSMOBILE"),"GM", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("PLYMOUTH"),"CHRYSLER", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("PONTIAC"),"GM", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("SATURN"),"GM", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("SCION"),"TOYOTA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("SUBARU"),"SUBARU", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("SUZUKI"),"SUZUKI", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("TOYOTA"),"TOYOTA", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("VOLKSWAGEN"),"VOLKSWAGEN", df['Make'])
-    df['Make'] = np.where(df.Make.str.contains("VOLVO"),"VOLVO", df['Make'])
+    # NOTE 
+    # is it real fundamental?
+     
+    # df['Make'] = np.where(df.Make.str.contains("ACURA"),"HONDA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("BUICK"),"GM", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("CADILLAC"),"GM", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("CHEVROLET"),"GM", df['Make']) 
+    # df['Make'] = np.where(df.Make.str.contains("CHRYSLER"),"CHRYSLER", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("DODGE"),"CHRYSLER", df['Make']) 
+    # df['Make'] = np.where(df.Make.str.contains("FORD"),"FORD", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("GMC"),"GMC", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("HONDA"),"HONDA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("HYUNDAI"),"HYUNDAI", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("INFINITI"),"NISSAN", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("ISUZU"),"ISUZU", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("JEEP"),"CHRYSLER", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("KIA"),"KIA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("LEXUS"),"TOYOTA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("LINCOLN"),"FORD", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("MAZDA"),"MAZDA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("MERCURY"),"FORD", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("MINI"),"BMW", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("MITSUBISHI"),"MITSUBISHI", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("NISSAN"),"NISSAN", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("OLDSMOBILE"),"GM", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("PLYMOUTH"),"CHRYSLER", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("PONTIAC"),"GM", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("SATURN"),"GM", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("SCION"),"TOYOTA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("SUBARU"),"SUBARU", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("SUZUKI"),"SUZUKI", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("TOYOTA"),"TOYOTA", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("VOLKSWAGEN"),"VOLKSWAGEN", df['Make'])
+    # df['Make'] = np.where(df.Make.str.contains("VOLVO"),"VOLVO", df['Make'])
 
 
 
@@ -436,8 +454,11 @@ def main():
     df.drop(columns=['PRIMEUNIT'], inplace=True)
     df.drop(columns=['AUCGUART'], inplace=True)
     df.drop(columns=['OldModel'], inplace=True)
+    df.drop(columns=['OldSubModel'], inplace=True)
 
-
+    # NOTE
+    # why not imputation?
+    # 
     # FILL NAN WITH A DEFAULT CATEGORY
     df['Nationality'].fillna('AMERICAN', inplace=True)
     df['Size'].fillna('NULL', inplace=True)
