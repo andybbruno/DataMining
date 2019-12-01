@@ -18,11 +18,21 @@ import random
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.experimental import enable_iterative_imputer
+from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.impute import IterativeImputer
 from collections import Counter
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
 from scipy.stats.stats import pearsonr
+
+
+def MICE(df):
+    columns = df.columns
+    imp = IterativeImputer(max_iter=100, missing_values=0, random_state=random.randint(0,1000), sample_posterior=True, verbose=True)
+    imp.fit(df)
+    res = imp.transform(df)
+    df = pd.DataFrame(res, columns=columns)
+    return df
 
 
 def main():
@@ -44,6 +54,7 @@ def main():
         'MMRCurrentRetailCleanPrice': 'CRCP'
     }, inplace=True)
 
+    olddate = df['PurchDate']
     df['PurchDate'] = pd.to_datetime(
         df['PurchDate'], infer_datetime_format=True)
     year = []
@@ -59,14 +70,12 @@ def main():
     df['PurchMonth'] = month
     df['PurchDay'] = day
     df['PurchWeekDay'] = week_day
-
-    df['Make'] = np.where(df['Make'] == 'TOYOTA SCION', 'SCION', df['Make'])
-    df['Make'] = np.where(df['Make'] == 'HUMMER', 'GMC',  df['Make'])
-    df['Make'] = np.where(df['Make'] == 'PLYMOUTH', 'DODGE',  df['Make'])
+    df['PurchDate'] = olddate
 
     df['OldModel'] = df['Model']
     df['SubModel'].fillna('NULL', inplace=True)
     df['OldSubModel'] = df['SubModel']
+            
 
     ########################################################################
 
@@ -87,7 +96,7 @@ def main():
             df['EngineLiters'] = np.where(df['Model'] == line, str(val), df['EngineLiters'])
             df['Model'] = np.where(df['Model'] == line, res, df['Model'])
 
-
+    print()
     # SUBMODEL CONTAINS INFO ABOUT LITERS AS WELL
     uniques = df['SubModel'].unique()
     regexLiters = "( \d[.]\dL| \d[.]\d| [\/]\d[.]\dL|-\d[.]\dL)"
@@ -339,14 +348,14 @@ def main():
     df['Model'] = np.where(df.Model.str.contains("YUKON.*"), "YUKON", df['Model'])
     df['Model'] = np.where(df.Model.str.contains("ZEPHYR.*"), "ZEPHYR", df['Model'])
 
-    
+    print("\nNumber of doors\n")
     df['NumDoors'] = 0
-    df['NumDoors'] = np.where(df.SubModel.str.contains(".*5D.*"), 4, df['NumDoors'])
+    df['NumDoors'] = np.where(df.SubModel.str.contains(".*5D.*"), 5, df['NumDoors'])
     df['NumDoors'] = np.where(df.SubModel.str.contains(".*4D.*"), 4, df['NumDoors'])
-    df['NumDoors'] = np.where(df.SubModel.str.contains(".*3D.*"), 4, df['NumDoors'])
-    df['NumDoors'] = np.where(df.SubModel.str.contains(".*2D.*"), 4, df['NumDoors'])
+    df['NumDoors'] = np.where(df.SubModel.str.contains(".*3D.*"), 3, df['NumDoors'])
+    df['NumDoors'] = np.where(df.SubModel.str.contains(".*2D.*"), 2, df['NumDoors'])
     
-    #TODO 
+    print("\nReducing SubModel \n")
     df['SubModel'] = np.where(df.SubModel.str.contains(".*SEDAN.*"), "SEDAN", df['SubModel'])
     df['SubModel'] = np.where(df.SubModel.str.contains(".*SUV.*|.*CUV.*"), "SUV", df['SubModel'])
     df['SubModel'] = np.where(df.SubModel.str.contains(".*JEEP.*"), "SUV", df['SubModel'])
@@ -368,9 +377,19 @@ def main():
     
     regex="BAS|SEDAN|SUV|CAB|CONVERTIBLE|COUPE|HATCHBACK|MINIVAN|WAGON|UTILITY|SPORT"
     #IF NOT REGEX
-    df['SubModel'] = np.where(~(df.SubModel.str.contains(regex)), "NULL", df['SubModel'])
+    df['SubModel'] = np.where(~(df.SubModel.str.contains(regex)), np.NaN, df['SubModel'])
 
-    
+
+    #Since SIZE and SUBMODEL are quite the same, if SUBMODEL is NaN I substitute it with SIZE
+    df['Size'].fillna('NULL', inplace=True)
+
+    for size in df['Size'].unique():
+        mode = df[df['Size']==size][['Size','SubModel']]['SubModel'].mode()[0]
+        positions = (df['SubModel'].isna()) & (df['Size'] == size)
+        df['SubModel'] = np.where(positions, mode, df['SubModel'])
+
+
+    print("\nNationality\n")
     df['Nationality'] = np.where(df.Make.str.contains("ACURA"),"JAPANESE", df['Nationality'])
     df['Nationality'] = np.where(df.Make.str.contains("BUICK"),"AMERICAN", df['Nationality'])
     df['Nationality'] = np.where(df.Make.str.contains("CADILLAC"),"AMERICAN", df['Nationality'])
@@ -405,38 +424,38 @@ def main():
 
     # NOTE 
     # is it real fundamental?
-     
-    # df['Make'] = np.where(df.Make.str.contains("ACURA"),"HONDA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("BUICK"),"GM", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("CADILLAC"),"GM", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("CHEVROLET"),"GM", df['Make']) 
-    # df['Make'] = np.where(df.Make.str.contains("CHRYSLER"),"CHRYSLER", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("DODGE"),"CHRYSLER", df['Make']) 
-    # df['Make'] = np.where(df.Make.str.contains("FORD"),"FORD", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("GMC"),"GMC", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("HONDA"),"HONDA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("HYUNDAI"),"HYUNDAI", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("INFINITI"),"NISSAN", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("ISUZU"),"ISUZU", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("JEEP"),"CHRYSLER", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("KIA"),"KIA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("LEXUS"),"TOYOTA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("LINCOLN"),"FORD", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("MAZDA"),"MAZDA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("MERCURY"),"FORD", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("MINI"),"BMW", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("MITSUBISHI"),"MITSUBISHI", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("NISSAN"),"NISSAN", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("OLDSMOBILE"),"GM", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("PLYMOUTH"),"CHRYSLER", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("PONTIAC"),"GM", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("SATURN"),"GM", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("SCION"),"TOYOTA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("SUBARU"),"SUBARU", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("SUZUKI"),"SUZUKI", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("TOYOTA"),"TOYOTA", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("VOLKSWAGEN"),"VOLKSWAGEN", df['Make'])
-    # df['Make'] = np.where(df.Make.str.contains("VOLVO"),"VOLVO", df['Make'])
+    print("\nReducing Make\n")
+    df['Make'] = np.where(df.Make.str.contains("ACURA"),"HONDA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("BUICK"),"GM", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("CADILLAC"),"GM", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("CHEVROLET"),"GM", df['Make']) 
+    df['Make'] = np.where(df.Make.str.contains("CHRYSLER"),"CHRYSLER", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("DODGE"),"CHRYSLER", df['Make']) 
+    df['Make'] = np.where(df.Make.str.contains("FORD"),"FORD", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("GMC"),"GMC", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("HONDA"),"HONDA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("HYUNDAI"),"HYUNDAI", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("INFINITI"),"NISSAN", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("ISUZU"),"ISUZU", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("JEEP"),"CHRYSLER", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("KIA"),"KIA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("LEXUS"),"TOYOTA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("LINCOLN"),"FORD", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("MAZDA"),"MAZDA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("MERCURY"),"FORD", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("MINI"),"BMW", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("MITSUBISHI"),"MITSUBISHI", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("NISSAN"),"NISSAN", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("OLDSMOBILE"),"GM", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("PLYMOUTH"),"CHRYSLER", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("PONTIAC"),"GM", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("SATURN"),"GM", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("SCION"),"TOYOTA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("SUBARU"),"SUBARU", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("SUZUKI"),"SUZUKI", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("TOYOTA"),"TOYOTA", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("VOLKSWAGEN"),"VOLKSWAGEN", df['Make'])
+    df['Make'] = np.where(df.Make.str.contains("VOLVO"),"VOLVO", df['Make'])
 
 
 
@@ -447,7 +466,11 @@ def main():
     # REMOVING WEIRD OUTLIERS
     to_drop = df[df['VehBCost'] < 2].index.values
     df.drop(index=to_drop, inplace=True)
-    train_ids.remove(to_drop)
+    if (to_drop in train_ids):
+        train_ids.remove(to_drop)
+    elif (to_drop in test_ids):
+        test_ids.remove(to_drop)
+    
 
     # REMOVING USELESS COLUMN
     df.drop(columns=['WheelTypeID'], inplace=True)
@@ -455,48 +478,85 @@ def main():
     df.drop(columns=['AUCGUART'], inplace=True)
     df.drop(columns=['OldModel'], inplace=True)
     df.drop(columns=['OldSubModel'], inplace=True)
+    df.drop(columns=['TopThreeAmericanName'], inplace=True)
+    df.drop(columns=['Size'], inplace=True)
+    df.drop(columns=['VNZIP1'], inplace=True)
+    df.drop(columns=['IsOnlineSale'], inplace=True)
+
 
     # NOTE
     # why not imputation?
     # 
     # FILL NAN WITH A DEFAULT CATEGORY
-    df['Nationality'].fillna('AMERICAN', inplace=True)
-    df['Size'].fillna('NULL', inplace=True)
-    df['Trim'].fillna('Bas', inplace=True)
     df['Color'].fillna('NOT AVAIL', inplace=True)
-    df['Transmission'].fillna('AUTO', inplace=True)
-    df['WheelType'].fillna('NULL', inplace=True)
-    df['TopThreeAmericanName'].fillna(str(df['TopThreeAmericanName'].mode()[0]), inplace=True)
-    
+    df['WheelType'].fillna('NULL', inplace=True)  
 
-
-    ################################## ENCODING ##################################
-    # TODO SUBMODEL
-    df.drop(columns=['SubModel'], inplace=True)
-
-    for col in list(df):
-        coltype = str(df[col].dtype)
-        if (coltype == "object"):
-            df[col] = LabelEncoder().fit_transform(df[col])
-
-    # Save Test Set
-    test_cleaned = df[df.RefId.isin(test_ids)]
-     # test_cleaned.to_csv('new_test_cleaned.csv')
-
-    # On the Training Set we do the imputation
-    train_cleaned = df[df.RefId.isin(train_ids)]
 
     ################################## DATA IMPUTATION ################################## 
-    print(train_cleaned.isna().sum())
+    print("\nDATA IMPUTATION\n")
 
-    columns = train_cleaned.columns
+    df['AAAP'] = pd.to_numeric(df['AAAP'])
+    df['AACP'] = pd.to_numeric(df['AACP'])
+    df['ARAP'] = pd.to_numeric(df['ARAP'])
+    df['ARCP'] = pd.to_numeric(df['ARCP'])
+    df['CAAP'] = pd.to_numeric(df['CAAP'])
+    df['CACP'] = pd.to_numeric(df['CACP'])
+    df['CRAP'] = pd.to_numeric(df['CRAP'])
+    df['CRCP'] = pd.to_numeric(df['CRCP'])
+    df['VehBCost'] = pd.to_numeric(df['VehBCost'])
+    df['EngineLiters'] = pd.to_numeric(df['EngineLiters'])
 
-    imp = IterativeImputer(max_iter=100, random_state=random.randint(0,1000), sample_posterior=True, verbose=True)
-    imp.fit(train_cleaned)
-    res = imp.transform(train_cleaned)
-    train_cleaned = pd.DataFrame(res , columns=columns)
-    # train_cleaned.to_csv('new_train_cleaned.csv')
+    for col in df.columns:
+        coltype = str(df[col].dtype)
+        if (coltype == "object"):
+            if(df[col].isna().sum() > 0):
+                df[col].fillna(0, inplace=True)
+                unique = list(df[col].unique())
+                if (0 in unique): unique.remove(0)
+                i = 1
+                for name in unique:
+                    df[col] = df[col].replace(name,i)
+                    i += 1
+            else:
+                i = 1
+                unique = list(df[col].unique())
+                for name in unique:
+                    df[col] = df[col].replace(name,i)
+                    i += 1
 
+    for col in df.columns:
+        df[col].fillna(0, inplace=True)
+        df[col] = pd.to_numeric(df[col])
+
+    # Imputation on YEAR
+    df[['VehYear','VehicleAge']] = MICE(df[['VehYear','VehicleAge']])
+    
+    #IMPUTATION ON TRIM
+    df[['Trim','Model','Color','PurchYear','PurchMonth','PurchDay']] = MICE(df[['Trim','Model','Color','PurchYear','PurchMonth','PurchDay']])
+
+    #IMPUTATION ON LITERS
+    df[['EngineLiters','Model']] = MICE(df[['EngineLiters','Model']] )
+
+    #IMPUTATION ON CYLINDERS
+    df[['NumCylinders', 'Model']] = MICE(df[['NumCylinders','Model']])
+    df['NumCylinders'] = df['NumCylinders'].apply(np.ceil)
+
+    #IMPUTATION ON TRANSMISSION
+    df[['Transmission','Model']] = MICE(df[['Transmission','Model']])
+    df['Transmission'] = df['Transmission'].apply(np.ceil)
+
+    #IMPUTATION ON PRICES
+    df[['AAAP','AACP','ARAP','ARCP','CAAP','CACP','CRAP','CRCP','Model']] = MICE(df[['AAAP','AACP','ARAP','ARCP','CAAP','CACP','CRAP','CRCP','Model']])
+
+    #IMPUTATION ON DOORS
+    df[['NumDoors','Model']] = MICE(df[['NumDoors','Model']])
+    df['NumDoors'] = df['NumDoors'].apply(np.ceil)
+
+    #save
+    test_cleaned = df[df.RefId.isin(test_ids)]
+    train_cleaned = df[df.RefId.isin(train_ids)]
+    train_cleaned.to_csv('new_train_cleaned.csv')
+    test_cleaned.to_csv('new_test_cleaned.csv')
 
 if __name__ == "__main__":
     main()
