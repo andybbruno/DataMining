@@ -24,6 +24,7 @@ from collections import Counter
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
 from scipy.stats.stats import pearsonr
+from sklearn.model_selection import train_test_split
 
 
 def MICE(df):
@@ -552,11 +553,22 @@ def main():
     df[['NumDoors','Model']] = MICE(df[['NumDoors','Model']])
     df['NumDoors'] = df['NumDoors'].apply(np.ceil)
 
-    #save
+    # #save
     test_cleaned = df[df.RefId.isin(test_ids)]
     train_cleaned = df[df.RefId.isin(train_ids)]
     train_cleaned.to_csv('new_train_cleaned.csv')
     test_cleaned.to_csv('new_test_cleaned.csv')
+
+    # y = df['IsBadBuy']
+    # X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.4)
+    
+    # X_train['IsBadBuy'] = y_train
+    # X_test['IsBadBuy'] = y_test
+
+    # X_train.to_csv('new_train_cleaned_SHUFFLING.csv')
+    # X_test.to_csv('new_test_cleaned_SHUFFLING.csv')
+
+
 
 if __name__ == "__main__":
     main()
