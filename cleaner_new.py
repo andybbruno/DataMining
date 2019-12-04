@@ -553,6 +553,13 @@ def main():
     df[['NumDoors','Model']] = MICE(df[['NumDoors','Model']])
     df['NumDoors'] = df['NumDoors'].apply(np.ceil)
 
+    #ADD TREND
+    #trend = []
+    #for i, row in df.iterrows():
+    #    a = (row['CAAP'] - row['AAAP']) / (row['AAAP'] + row['CAAP'])
+    #    trend.append(a)
+    #new_df['Trend'] = trend
+    
     # #save
     test_cleaned = df[df.RefId.isin(test_ids)]
     train_cleaned = df[df.RefId.isin(train_ids)]
