@@ -1,7 +1,7 @@
 # Import PlaidML before Keras!
 import os
-import plaidml.keras
-os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
+#import plaidml.keras
+#os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 # 
 
 import math
@@ -38,6 +38,9 @@ def MICE(df):
 
 
 def main():
+    kids = False
+    if len(sys.argv) > 1 and sys.argv[1] == 'kids':
+        kids = True
     df_train = pd.read_csv('training.csv')
     df_test = pd.read_csv('test.csv')
     train_ids = df_train['RefId'].tolist()
@@ -510,6 +513,7 @@ def main():
 
     #TODO: 4 LORENZO
 
+    mapping = {}
     for col in df.columns:
         coltype = str(df[col].dtype)
         if (coltype == "object"):
@@ -520,11 +524,17 @@ def main():
                 i = 1
                 for name in unique:
                     df[col] = df[col].replace(name,i)
+                    if str(col) not in mapping:
+                        mapping[str(col)] = {}
+                    mapping[str(col)][str(i)] = str(name)
                     i += 1
             else:
                 i = 1
                 unique = list(df[col].unique())
                 for name in unique:
+                    if str(col) not in mapping:
+                        mapping[str(col)] = {}
+                    mapping[str(col)][str(i)] = str(name)
                     df[col] = df[col].replace(name,i)
                     i += 1
 
@@ -576,11 +586,21 @@ def main():
     df['PCA1'] = PCA_df['PCA1']
     df['PCA2'] = PCA_df['PCA2']
 
-    # #save
-    test_cleaned = df[df.RefId.isin(test_ids)]
-    train_cleaned = df[df.RefId.isin(train_ids)]
-    train_cleaned.to_csv('new_train_cleaned.csv')
-    test_cleaned.to_csv('new_test_cleaned.csv')
+    if kids:
+        for col in mapping.keys():
+            map = mapping[col]
+            for e in map:
+                print(e, "->", map[e])
+                df[col] = df[col].replace([e], map[e])
+        test_cleaned = df[df.RefId.isin(test_ids)]
+        train_cleaned = df[df.RefId.isin(train_ids)]
+        train_cleaned.to_csv('kids_train_cleaned.csv')
+        test_cleaned.to_csv('kids_test_cleaned.csv')
+    else:
+        test_cleaned = df[df.RefId.isin(test_ids)]
+        train_cleaned = df[df.RefId.isin(train_ids)]
+        train_cleaned.to_csv('new_train_cleaned.csv')
+        test_cleaned.to_csv('new_test_cleaned.csv')
 
     # y = df['IsBadBuy']
     # X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.4)
