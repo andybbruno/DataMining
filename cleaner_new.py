@@ -1,7 +1,7 @@
 # Import PlaidML before Keras!
 import os
-#import plaidml.keras
-#os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
+import plaidml.keras
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 # 
 
 import math
@@ -585,13 +585,13 @@ def main():
     # ADDING PCA COLUMNS
     df['PCA1'] = PCA_df['PCA1']
     df['PCA2'] = PCA_df['PCA2']
-
+    
     if kids:
         for col in mapping.keys():
             map = mapping[col]
             for e in map:
                 print(e, "->", map[e])
-                df[col] = df[col].replace([e], map[e])
+                df[col] = df[col].replace(int(e), map[e])
         test_cleaned = df[df.RefId.isin(test_ids)]
         train_cleaned = df[df.RefId.isin(train_ids)]
         train_cleaned.to_csv('kids_train_cleaned.csv')
