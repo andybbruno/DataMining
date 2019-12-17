@@ -1,3 +1,4 @@
 .ipynb_checkpoints
 .vscode
 titanic_data_understanding2.ipynb
+.DS_Store
