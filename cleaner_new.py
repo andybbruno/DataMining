@@ -508,6 +508,8 @@ def main():
     df['VehBCost'] = pd.to_numeric(df['VehBCost'])
     df['EngineLiters'] = pd.to_numeric(df['EngineLiters'])
 
+    #TODO: 4 LORENZO
+
     for col in df.columns:
         coltype = str(df[col].dtype)
         if (coltype == "object"):
