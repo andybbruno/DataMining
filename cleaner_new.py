@@ -25,6 +25,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
 from scipy.stats.stats import pearsonr
 from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
 
 
 def MICE(df):
@@ -559,7 +560,20 @@ def main():
     #    a = (row['CAAP'] - row['AAAP']) / (row['AAAP'] + row['CAAP'])
     #    trend.append(a)
     #new_df['Trend'] = trend
-    
+
+
+    # PCA
+    slice = df[['AAAP','AACP','ARAP','ARCP','CAAP','CACP','CRAP','CRCP']]
+    pca = PCA(n_components=2)
+    principalComponents = pca.fit_transform(slice)
+    PCA_df = pd.DataFrame(data = principalComponents, columns = ['PCA1', 'PCA2'])
+
+    # REMOVING PCA COLUMNS
+    df.drop(columns=['AAAP','AACP','ARAP','ARCP','CAAP','CACP','CRAP','CRCP'], inplace=True)
+    # ADDING PCA COLUMNS
+    df['PCA1'] = PCA_df['PCA1']
+    df['PCA2'] = PCA_df['PCA2']
+
     # #save
     test_cleaned = df[df.RefId.isin(test_ids)]
     train_cleaned = df[df.RefId.isin(train_ids)]
