@@ -581,7 +581,8 @@ def main():
     PCA_df = pd.DataFrame(data = principalComponents, columns = ['PCA1', 'PCA2'])
 
     # REMOVING PCA COLUMNS
-    df.drop(columns=['AAAP','AACP','ARAP','ARCP','CAAP','CACP','CRAP','CRCP'], inplace=True)
+    if not kids:
+        df.drop(columns=['AAAP','AACP','ARAP','ARCP','CAAP','CACP','CRAP','CRCP'], inplace=True)
     # ADDING PCA COLUMNS
     df['PCA1'] = PCA_df['PCA1']
     df['PCA2'] = PCA_df['PCA2']
