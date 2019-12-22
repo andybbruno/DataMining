@@ -77,7 +77,7 @@ plt.show()
 fig = plt.figure()
 fig.canvas.manager.full_screen_toggle()
 
-fig.suptitle('RANDOM FOREST OVERSAMPLING', fontsize=14, fontweight='bold')
+fig.suptitle('RANDOM FOREST UNDERSAMPLING', fontsize=14, fontweight='bold')
 
 ax = plt.subplot(121)
 file = '/RandomForest/CV_UnderSampling_Random_Forest_f1.csv'
