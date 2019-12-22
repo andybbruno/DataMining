@@ -1,43 +1,58 @@
-##############
+import math
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+import plotly.express as px
+from plotly import graph_objects as go
+import seaborn as sns
+#import missingno as msno
 
-    x = df[['Make', 'WarrantyCost']].groupby('Make').mean()
-    x = [item for sublist in x.values.tolist() for item in sublist]
+from collections import Counter
+from mpl_toolkits.mplot3d import Axes3D
+from collections import defaultdict
+from scipy.stats.stats import pearsonr
 
-    y = df[['Make', 'VehBCost']].groupby('Make').mean()
-    y = [item for sublist in y.values.tolist() for item in sublist]
+df = pd.read_csv('kids_train_cleaned.csv')
 
-    z = list(dict(df.groupby(['Make']).size()).values())
-    z = [float(i)/100 for i in z]
-    # z = [50 for i in z]
-    names = list(dict(df.groupby(['Make']).size()).keys())
+import random
 
-    # Create figure
-    fig = go.Figure()
+x = df[['Make', 'WarrantyCost']].groupby('Make').mean()
+x = [item for sublist in x.values.tolist() for item in sublist]
 
-    fig.add_trace(go.Scatter(
-        x=x,
-        y=y,
-        mode='markers+text',
-        text=names,
-        textposition="middle center",
-        marker=dict(
-            size=z,
-            color=[random.randint(0, 2000) for i in range(len(z))],
-            colorscale="Rainbow"
-        )
-    ))
+y = df[['Make', 'VehBCost']].groupby('Make').mean()
+y = [item for sublist in y.values.tolist() for item in sublist]
 
-    fig.update_layout(
-        title="FANTASTIC PLOT",
-        xaxis=dict(
-            title="VehBCost",
-            type='log'
-        ),
+z = list(dict(df.groupby(['Make']).size()).values())
+z = [float(i)/100 for i in z]
+# z = [50 for i in z]
+names = list(dict(df.groupby(['Make']).size()).keys())
 
-        yaxis=dict(
-            title="WarrantyCost",
-        )
+# Create figure
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers+text',
+    text=names,
+    textposition="middle center",
+    marker=dict(
+        size=z,
+        color=[random.randint(0, 6000) for i in range(len(z))],
+        colorscale="Rainbow"
     )
-    fig.show()
+))
 
-    ##############
+fig.update_layout(
+    title="FANTASTIC PLOT",
+    xaxis=dict(
+        title="VehBCost",
+        type='log'
+    ),
+
+    yaxis=dict(
+        title="WarrantyCost",
+    )
+)
+fig.show()
