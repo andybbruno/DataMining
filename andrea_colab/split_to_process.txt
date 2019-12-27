@@ -1,20 +1,6 @@
-0.518 (+/-0.007) for {'n_neighbors': 1, 'weights': 'uniform'}
-0.518 (+/-0.007) for {'n_neighbors': 1, 'weights': 'distance'}
-0.481 (+/-0.008) for {'n_neighbors': 4, 'weights': 'uniform'}
-0.505 (+/-0.009) for {'n_neighbors': 4, 'weights': 'distance'}
-0.481 (+/-0.012) for {'n_neighbors': 7, 'weights': 'uniform'}
-0.482 (+/-0.012) for {'n_neighbors': 7, 'weights': 'distance'}
-0.471 (+/-0.003) for {'n_neighbors': 10, 'weights': 'uniform'}
-0.478 (+/-0.005) for {'n_neighbors': 10, 'weights': 'distance'}
-0.471 (+/-0.002) for {'n_neighbors': 13, 'weights': 'uniform'}
-0.471 (+/-0.004) for {'n_neighbors': 13, 'weights': 'distance'}
-0.468 (+/-0.003) for {'n_neighbors': 16, 'weights': 'uniform'}
-0.471 (+/-0.004) for {'n_neighbors': 16, 'weights': 'distance'}
-0.469 (+/-0.003) for {'n_neighbors': 19, 'weights': 'uniform'}
-0.469 (+/-0.004) for {'n_neighbors': 19, 'weights': 'distance'}
-0.467 (+/-0.001) for {'n_neighbors': 22, 'weights': 'uniform'}
-0.468 (+/-0.002) for {'n_neighbors': 22, 'weights': 'distance'}
-0.467 (+/-0.001) for {'n_neighbors': 25, 'weights': 'uniform'}
-0.468 (+/-0.002) for {'n_neighbors': 25, 'weights': 'distance'}
-0.467 (+/-0.000) for {'n_neighbors': 28, 'weights': 'uniform'}
-0.467 (+/-0.001) for {'n_neighbors': 28, 'weights': 'distance'}
+0.663 (+/-0.019) for {'randomforestclassifier__n_estimators': 25}
+0.666 (+/-0.021) for {'randomforestclassifier__n_estimators': 50}
+0.667 (+/-0.023) for {'randomforestclassifier__n_estimators': 100}
+0.667 (+/-0.021) for {'randomforestclassifier__n_estimators': 200}
+0.668 (+/-0.022) for {'randomforestclassifier__n_estimators': 500}
+0.667 (+/-0.023) for {'randomforestclassifier__n_estimators': 1000}
