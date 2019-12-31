@@ -2,3 +2,6 @@
 .vscode
 titanic_data_understanding2.ipynb
 .DS_Store
+*.synctex.gz
+*.aux
+*.log
