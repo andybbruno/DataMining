@@ -2,6 +2,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
+import plotly.graph_objects as go
+
 
 
 kwargs = dict(ecolor='k', color='k', capsize=2,
@@ -12,7 +14,7 @@ fig.canvas.manager.full_screen_toggle()
 
 fig.suptitle('RANDOM FOREST', fontsize=14, fontweight='bold')
 
-ax = plt.subplot(121)
+fig = go.Figure()
 file = '/RandomForest/CV_RandomForest_f1.csv'
 file = os.getcwd() + file
 metric = 'f1'
@@ -20,11 +22,79 @@ df = pd.read_csv(file)
 x = df['n_estimators']
 y = df[metric]
 dy = df['std_dev']
-ax.errorbar(x, y, yerr=dy, fmt='o', color='black', ecolor='lightgray', elinewidth=3, capsize=0, markersize=8)
-ax.plot(x,y,'m-',linewidth=4)
-ax.title.set_text('F1')
 
-ax = plt.subplot(122)
+n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range(len(dy))]
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    line = dict(dash='dash', width=4)
+))
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=dy,
+        color='gray',
+        thickness=3,
+        width=3),
+    marker=dict(color='black', size=12)
+))
+
+
+for i, txt in enumerate(n):
+    if i == 0:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=-75,
+            ay=-75,
+            x=x.iloc[0],
+            y=y.iloc[0],
+            text=n[0],
+            arrowsize=4)
+        )
+    elif i == 1:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=75,
+            ay=75,
+            x=x.iloc[1],
+            y=y.iloc[1],
+            text=n[1],
+            arrowsize=4)
+        )
+    else:
+        fig.add_annotation(
+            go.layout.Annotation(
+                xref='x', yref='y',
+                ax=75,
+                ay=-75,
+                x=x.iloc[i],
+                y=y.iloc[i],
+                text=txt,
+                arrowsize=4)
+        )
+
+        
+fig.update_layout(
+    showlegend=False, 
+    title={
+        'text': "RANDOM FOREST F1",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+)
+
+fig.show()
+
+
+fig = go.Figure()
 file = '/RandomForest/CV_RandomForest_recall.csv'
 file = os.getcwd() + file
 metric = 'recall'
@@ -32,11 +102,76 @@ df = pd.read_csv(file)
 x = df['n_estimators']
 y = df[metric]
 dy = df['std_dev']
-ax.errorbar(x, y, yerr=dy, fmt='o', color='black', ecolor='lightgray', elinewidth=3, capsize=0,markersize=8)
-ax.plot(x,y,'c-',linewidth=4)
-ax.title.set_text('RECALL')
+n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range(len(dy))]
 
-plt.show()
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    line = dict(color='orangered', dash='dash', width=4)
+))
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=dy,
+        color='gray',
+        thickness=3,
+        width=3),
+    marker=dict(color='black', size=12)
+))
+
+
+for i, txt in enumerate(n):
+    if i == 0:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=-75,
+            ay=-75,
+            x=x.iloc[0],
+            y=y.iloc[0],
+            text=n[0],
+            arrowsize=4)
+        )
+    elif i == 1:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=75,
+            ay=75,
+            x=x.iloc[1],
+            y=y.iloc[1],
+            text=n[1],
+            arrowsize=4)
+        )
+    else:
+        fig.add_annotation(
+            go.layout.Annotation(
+                xref='x', yref='y',
+                ax=75,
+                ay=-75,
+                x=x.iloc[i],
+                y=y.iloc[i],
+                text=txt,
+                arrowsize=4)
+        )
+
+        
+fig.update_layout(
+    showlegend=False, 
+    title={
+        'text': "RANDOM FOREST RECALL",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+)
+
+fig.show()
+
 
 
 ################################
@@ -44,9 +179,8 @@ plt.show()
 fig = plt.figure()
 fig.canvas.manager.full_screen_toggle()
 
-fig.suptitle('RANDOM FOREST OVERSAMPLING', fontsize=14, fontweight='bold')
 
-ax = plt.subplot(121)
+fig = go.Figure()
 file = '/RandomForest/CV_OverSampling_Random_Forest_f1.csv'
 file = os.getcwd() + file
 metric = 'f1'
@@ -54,11 +188,79 @@ df = pd.read_csv(file)
 x = df['n_estimators']
 y = df[metric]
 dy = df['std_dev']
-ax.errorbar(x, y, yerr=dy, fmt='o', color='black', ecolor='lightgray', elinewidth=3, capsize=0,markersize=8)
-ax.plot(x,y,'m-',linewidth=4)
-ax.title.set_text('F1')
+n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range(len(dy))]
 
-ax = plt.subplot(122)
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    line = dict(dash='dash', width=4)
+))
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=dy,
+        color='gray',
+        thickness=3,
+        width=3),
+    marker=dict(color='black', size=12)
+))
+
+
+for i, txt in enumerate(n):
+    if i == 0:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=-75,
+            ay=-75,
+            x=x.iloc[0],
+            y=y.iloc[0],
+            text=n[0],
+            arrowsize=4)
+        )
+    elif i == 1:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=75,
+            ay=75,
+            x=x.iloc[1],
+            y=y.iloc[1],
+            text=n[1],
+            arrowsize=4)
+        )
+    else:
+        fig.add_annotation(
+            go.layout.Annotation(
+                xref='x', yref='y',
+                ax=75,
+                ay=-75,
+                x=x.iloc[i],
+                y=y.iloc[i],
+                text=txt,
+                arrowsize=4)
+        )
+
+        
+fig.update_layout(
+    showlegend=False, 
+    title={
+        'text': "RANDOM FOREST OVERSAMPLING F1",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+)
+
+fig.show()
+
+
+
+fig = go.Figure()
 file = '/RandomForest/CV_OverSampling_Random_Forest_recall.csv'
 file = os.getcwd() + file
 metric = 'recall'
@@ -66,20 +268,79 @@ df = pd.read_csv(file)
 x = df['n_estimators']
 y = df[metric]
 dy = df['std_dev']
-ax.errorbar(x, y, yerr=dy, fmt='o', color='black', ecolor='lightgray', elinewidth=3, capsize=0,markersize=8)
-ax.plot(x,y,'c-',linewidth=4)
-ax.title.set_text('RECALL')
+n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range(len(dy))]
 
-plt.show()
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    line = dict(color='orangered', dash='dash', width=4)
+))
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=dy,
+        color='gray',
+        thickness=3,
+        width=3),
+    marker=dict(color='black', size=12)
+))
+
+
+for i, txt in enumerate(n):
+    if i == 0:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=-75,
+            ay=-75,
+            x=x.iloc[0],
+            y=y.iloc[0],
+            text=n[0],
+            arrowsize=4)
+        )
+    elif i == 1:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=75,
+            ay=75,
+            x=x.iloc[1],
+            y=y.iloc[1],
+            text=n[1],
+            arrowsize=4)
+        )
+    else:
+        fig.add_annotation(
+            go.layout.Annotation(
+                xref='x', yref='y',
+                ax=75,
+                ay=-75,
+                x=x.iloc[i],
+                y=y.iloc[i],
+                text=txt,
+                arrowsize=4)
+        )
+
+        
+fig.update_layout(
+    showlegend=False, 
+    title={
+        'text': "RANDOM FOREST OVERSAMPLING RECALL",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+)
+
+fig.show()
 
 ################################
 
-fig = plt.figure()
-fig.canvas.manager.full_screen_toggle()
-
-fig.suptitle('RANDOM FOREST UNDERSAMPLING', fontsize=14, fontweight='bold')
-
-ax = plt.subplot(121)
+fig = go.Figure()
 file = '/RandomForest/CV_UnderSampling_Random_Forest_f1.csv'
 file = os.getcwd() + file
 metric = 'f1'
@@ -87,11 +348,79 @@ df = pd.read_csv(file)
 x = df['n_estimators']
 y = df[metric]
 dy = df['std_dev']
-ax.errorbar(x, y, yerr=dy, fmt='o', color='black', ecolor='lightgray', elinewidth=3, capsize=0,markersize=8)
-ax.plot(x,y,'m-',linewidth=4)
-ax.title.set_text('F1')
+n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range(len(dy))]
 
-ax = plt.subplot(122)
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    line = dict(dash='dash', width=4)
+))
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=dy,
+        color='gray',
+        thickness=3,
+        width=3),
+    marker=dict(color='black', size=12)
+))
+
+
+for i, txt in enumerate(n):
+    if i == 0:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=-75,
+            ay=-75,
+            x=x.iloc[0],
+            y=y.iloc[0],
+            text=n[0],
+            arrowsize=4)
+        )
+    elif i == 1:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=75,
+            ay=75,
+            x=x.iloc[1],
+            y=y.iloc[1],
+            text=n[1],
+            arrowsize=4)
+        )
+    else:
+        fig.add_annotation(
+            go.layout.Annotation(
+                xref='x', yref='y',
+                ax=75,
+                ay=-75,
+                x=x.iloc[i],
+                y=y.iloc[i],
+                text=txt,
+                arrowsize=4)
+        )
+
+        
+fig.update_layout(
+    showlegend=False, 
+    title={
+        'text': "RANDOM FOREST UNDERSAMPLING F1",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+)
+
+fig.show()
+
+
+
+fig = go.Figure()
 file = '/RandomForest/CV_UnderSampling_Random_Forest_recall.csv'
 file = os.getcwd() + file
 metric = 'recall'
@@ -99,11 +428,75 @@ df = pd.read_csv(file)
 x = df['n_estimators']
 y = df[metric]
 dy = df['std_dev']
-ax.errorbar(x, y, yerr=dy, fmt='o', color='black', ecolor='lightgray', elinewidth=3, capsize=0,markersize=8)
-ax.plot(x,y,'c-',linewidth=4)
-ax.title.set_text('RECALL')
+n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range(len(dy))]
 
-plt.show()
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    line = dict(color='orangered', dash='dash', width=4)
+))
+
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=dy,
+        color='gray',
+        thickness=3,
+        width=3),
+    marker=dict(color='black', size=12)
+))
+
+
+for i, txt in enumerate(n):
+    if i == 0:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=-75,
+            ay=-75,
+            x=x.iloc[0],
+            y=y.iloc[0],
+            text=n[0],
+            arrowsize=4)
+        )
+    elif i == 1:
+        fig.add_annotation(
+        go.layout.Annotation(
+            xref='x', yref='y',
+            ax=75,
+            ay=75,
+            x=x.iloc[1],
+            y=y.iloc[1],
+            text=n[1],
+            arrowsize=4)
+        )
+    else:
+        fig.add_annotation(
+            go.layout.Annotation(
+                xref='x', yref='y',
+                ax=75,
+                ay=-75,
+                x=x.iloc[i],
+                y=y.iloc[i],
+                text=txt,
+                arrowsize=4)
+        )
+
+        
+fig.update_layout(
+    showlegend=False, 
+    title={
+        'text': "RANDOM FOREST UNDERSAMPLING RECALL",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+)
+
+fig.show()
 
 ################################
 
