@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{geometry}
-\geometry{a4paper,top=3cm,bottom=4cm,left=3.5cm,right=3.5cm,%
+\geometry{a4paper,top=2cm,bottom=2cm,left=1.5cm,right=1.5cm,%
 	heightrounded,bindingoffset=5mm} %sistemiamo questi per decidere i bordi
 \usepackage[utf8]{inputenc}
 \usepackage{wrapfig}
@@ -11,6 +11,8 @@
 \usepackage{natbib}
 \usepackage{makecell}
 \usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
 \usepackage{color, colortbl}
 \definecolor{Gray}{gray}{0.9}
 \definecolor{LightCyan}{rgb}{0.88,1,1}
@@ -34,7 +36,7 @@
 		\vspace{2cm}
 		{\Large\ Lorenzo Bellomo \\ Andrea Bruno \\ Marta Scalisi \\ Chiara Spampinato\par}
 		\vspace{4cm}
-		{\Large\ January 04, 2020\par}
+		{\Large\ January 2020\par}
 	\end{titlepage}
 	
 	
@@ -42,12 +44,11 @@
 	
 	\section{Data Understanding}
 	The data set contains information about car auctions. The majority of attributes give us information about vehicles. 
-	In this section we'll explain how we studied our data, evaluated the quality of them, how we fixed any missing values (invalid or misleading) in order to gain general insights about the data that would potentially be helpful for the complete analysis.
+	In this section, we'll explain how we studied our data, evaluated the quality of them, how we fixed any missing values (invalid or misleading), in order to gain general insights about the data that would potentially be helpful for the complete analysis.
 	
 	\subsection{Data Semantics}
 	\label{sec:dataSemantics}
-	The semantic meaning of the most important (in our opinion) variables in the dataset is described in the following, while the remaining columns are not described either because their meaning is obvious or because its discussion is delayed to the following sections.
-	\begin{itemize}
+	The semantic meaning of the most important (in our opinion) variables in the dataset are described in the following, while the remaining columns are not described either because their meaning is too obvious or because its discussion is delayed to the following sections.\begin{itemize}
 		\item \emph{RefId}: attribute which defines an unique ID number assigned to each vehicle;
 		\item \emph{Auction}: categorical attribute which defines three different auction providers (Manheim, Adesa, other);
 		\item \emph{Make}: categorical attribute which gives us the name of the production company of the vehicle;
@@ -98,7 +99,8 @@
 		\label{fig:corr}
 	\end{figure}
 	
-	Finally, analyzing the correlation matrix, shown in figure \ref{fig:corr}, of all the continuous attributes we can see that the 8 MMR attributes are strongly correlated (close to 0.9). Therefore, we reduce them in two attributes by using the algorithm PCA used to reduce the dimentionality of the data. We created 2 variables from the original 8, namely PCA1 and PCA2. The first one became the most correlated to the original prices, while the second one had lower correlation and mainly expressed the variance between different attributes. \\
+	
+	Finally, analyzing the correlation matrix (shown in the figure\ref {fig:corr},) of all the continuous attributes we can see that the 8 MMR attributes are strongly correlated (close to 0.9). Therefore, we reduced them into two attributes by using the algorithm PCA used to reduce the dimensionality of the data. We created 2 variables from the original 8, namely PCA1 and PCA2. The first one became the most correlated to the original prices, while the second one had a lower correlation and mainly expressed the variance between different attributes.\\
 	However, for the sake of clarity, we used PCA1 and PCA2 only in section \ref{sec:classification}, when dealing with classification. We instead decided to use one candidate price (MMRAcquisitionAuctionAveragePrice, or AAAP for short) in section \ref{sec:patternmining} and section \ref{sec:clustering} when describing Pattern Mining and Clustering, in order to have clearer semantics regarding car prices. 
 	The discussion regarding the distribution of MMR attributes and PCA ones is delayed to section \ref{sec:attrDistr}.
 	
@@ -106,17 +108,19 @@
 	\subsection{Assessing data quality}
 	
 	In order to assess the quality of data, we performed some variable wise consistency checks (for example on VehYear, VehicleAge, VehOdo, WarrantyCost), but we did not find any notable error. However, we found a lot of 0 values for the 8 MMR prices (in addition to its missing values), and we also identified one clear outlier in the VehBCost column, with this car having been sold at 10\$. We then decided to drop this row. \\
-	Outlier wise, we found that the MMR prices were usually coherent with respect to the VehBCost attribute, so we decided to keep in the data set all the other rows. In this, we also kept a lot of very high cost cars, but we could not label these cars as outliers, as we thought that this behavious is to be expected.
+	Outlier wise, we found that the MMR prices were usually coherent with respect to the VehBCost attribute, so we decided to keep in the data set all the other rows. In this, we also kept a lot of very high-cost cars, but we could not label these cars as outliers, as we thought that this behavior is to be expected.
 	
 	\begin{figure}[H]
 		\centering
-		{\includegraphics[width=.9\textwidth, height=.8\textheight, keepaspectratio]{missingv.png}}
+		{\includegraphics[width=\textwidth, height=.8\textheight, keepaspectratio]{missingv.png}}
 		\caption{{ Missing values }}
 		\label{fig:missingval}
 	\end{figure}
 	
 	By looking at figure \ref{fig:missingval} it is possible to see the missing value of our dataset (identified by the white lines). The attributes PRIMEUNIT and AUCGUART have too many missing values, so we decide to discard and not use them.\\
-	Analyzing the others, we chose to correct the variables Trim, Liters, Cylinders, Transmission, Prices and Doors with the algorithm MICE (Multiple Imputation by Chained Equations).%%%%% AIUTOOOOO, POI DOBBIAMO PARLARE DI QUESTO PUNTO
+	
+	
+	Analyzing the others, we chose to correct the variables Trim, Liters, Cylinders, Transmission with the algorithm MICE (Multiple Imputation by Chained Equations).
 	
 	
 	
@@ -129,18 +133,18 @@
 	In the plot shown in figure \ref{fig:mmr}, we show the distribution of the 8 numerical attributes which point out the different prices of Vehicle as we explained in the first part of Data Semantics (section \ref{sec:dataSemantics}). 
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.49\textwidth]{index}\hfill
-		\includegraphics[width=.49\textwidth]{PCA1}\hfill
+		\includegraphics[width=.4\textwidth]{index}\hfill
+		\includegraphics[width=.4\textwidth]{PCA1}
 		\caption{Distribution of 8 MMR prices and of PCA1}
 		\label{fig:mmr}
 	\end{figure}
 	
-	We are able to notice that MMR attributes are very correlated, but the correlation is ever higher when considering them pairwise (when considering clean price and average price togheter). \\
+	We are able to notice that MMR attributes are very correlated, but the correlation is ever higher when considering them pairwise (when considering clean price and average price together). \\
 	We are also able to notice that, before variable cleaning, there is a very high peak corresponding to the 0. This peak is no longer present in PCA1, as before applying the algorithm we considered those 0s as missing values and imputed them. 
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.55\textwidth]{hist}\hfill
+		\includegraphics[width=.4\textwidth]{hist}\hfill
 		\caption{Distribution of the attribute VehBCost}
 	\end{figure}
 	Analyzing the attribute \emph{VehBCost}, we can observe that Vehicles are usually sold for a price between 6000 and 7000, and a very low percentage of cars is sold above 11000 or below 5000 USD. 
@@ -148,29 +152,29 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.7\textwidth, height=.6\textheight, keepaspectratio]{newplot.png}
+		\includegraphics[width=.6\textwidth, height=.6\textheight, keepaspectratio]{newplot.png}
 		\caption{{ Distribution of the attribute VSNT}}
 	\end{figure}
 	
 	
-	For the attribute \emph{VSNT} we decide to plot the distribution on a map of the United States. By looking at the figure, it is possible to see that the major number of auctions is done in Texas (18800), followed by Florida (8317) and California (5673). On the other hand, the state with lower auctions is New York (4). Furthermore, there are no auctions in Montana, Wyoming, North Dakota, South Dakota, Kansas, Wisconsin, Maine, Vermont, Rhode Island and Connecticut. \\
-	
-	
-	
-	As far as it concerns the attribute \emph{Color} (figure \ref{fig:color}, it is not surprising that the most common colors are blue, silver and white.
+	For the attribute \emph{VSNT} we decide to plot the distribution on a map of the United States. By looking at the figure, it is possible to see that the major number of auctions is done in Texas (18800), followed by Florida (8317) and California (5673). On the other hand, the state with lower auctions is New York (4). Furthermore, there are no auctions in Montana, Wyoming, North Dakota, South Dakota, Kansas, Wisconsin, Maine, Vermont, Rhode Island and Connecticut.
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.3\textwidth, height=.2\textheight, keepaspectratio]{color.png}
-		\caption{{ Distribution of the attribute Color}}
+		\includegraphics[width=.4\textwidth]{color.png}
+		\caption{Distribution of the attribute Color}
 		\label{fig:color}
 	\end{figure}
 	
-	By analysing also the distribution of the variable IsBadBuy in figure \ref{fig:badbuys}, plotted with respect to WarrantyCost ans VehOdo on the left, and with respect to WheelType on the right, we are able to notice a few different things. Regarding the left image, bad purchases are more frequent in less dense areas. Regarding the image on the right, we are able to notice that, whenever WheelType information is lacking, the number of bad buys is huge with respect to the variable distribution (corresponding to the column labeled as \emph{Unknown}).
+	
+	As far as it concerns the attribute \emph{Color} (figure \ref{fig:color}, it is not surprising that the most common colors are blue, silver and white.
+	
+	
+	By analyzing also the distribution of the variable IsBadBuy in figure \ref{fig:badbuys}, plotted with respect to WarrantyCost and VehOdo on the left, and with respect to WheelType on the right, we can notice a few different things. Regarding the left image, bad purchases are more frequent in less dense areas. Regarding the image on the right, we are able to notice that, whenever WheelType information is lacking, the number of bad buys is huge with respect to the variable distribution (corresponding to the column labeled as \emph{Unknown}).
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.59\textwidth, keepaspectratio]{badbuys} \hfill
-		\includegraphics[width=.39\textwidth, keepaspectratio]{wheeltype}
+		\includegraphics[width=.49\textwidth, keepaspectratio]{badbuys}
+		\includegraphics[width=.41\textwidth, keepaspectratio]{wheeltype}
 		\caption{IsBadBuy distribution with respect to VehOdo and VehBCost}
 		\label{fig:badbuys}
 	\end{figure}
@@ -207,6 +211,7 @@
 			4 & 'WarrantyCost' ,  'VehOdo' ,  'VehBCost'  \\
 			\rowcolor{Gray}
 			5 & 'WarrantyCost' ,  'AAAP' , 'VehOdo' \\
+			\hline
 		\end{tabular}
 	\end{table}
 	
@@ -242,6 +247,7 @@
 			DF4 & 6 & 157.0 & 0.287  \\
 			\rowcolor{Gray}
 			DF5 & 6 & 184.0\textbf & 0.278 \\
+			\hline
 		\end{tabular}
 		\caption{{ Summary of the SSE, Silhouette and k values obtained for all the Attribute sets with K-means}}
 		\label{tab:SSESilu}
@@ -258,10 +264,11 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.8\textwidth, keepaspectratio]{centroid}
+		\includegraphics[width=.6\textwidth, keepaspectratio]{centroid}
 		\caption{{Clusters plotted with WarrantyCost and VehOdo}}
 		\label{fig:centroid}
 	\end{figure}
+	
 	
 	The clusters descriptions for figure \ref{fig:centroid} are:
 	\begin{enumerate}
@@ -275,7 +282,7 @@
 	Given these outcomes, we tried to understand if bad buys were located mainly in one of those clusters. By plotting this information in figure \ref{fig:clusterbuy}, we noticed that cluster 2 (new cars with low odometer reading), has the least amount of bad buys.
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.7\textwidth, keepaspectratio]{clusterbuy}
+		\includegraphics[width=.5\textwidth, keepaspectratio]{clusterbuy}
 		\caption{{Distribution of IsBadBuy with respect to the 6 clusters found}}
 		\label{fig:clusterbuy}
 	\end{figure}
@@ -293,6 +300,7 @@
 	
 	\subsubsection{Study of the clustering parameters}
 	In order to choose the right $\epsilon$ and $\mathbf{min points}$, we adopted the knee method by plotting the distance to the \emph{k-th} nearest neighbour, where k was taken from [32, 64, 128, 256, 512]. The resulting curves, shown in figure \ref{fig:kth}, were used to select the right epsilon for attempting the clustering with DB-Scan. 
+	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=.32\textwidth]{a32}\hfill
@@ -301,6 +309,7 @@
 		\caption{k-th neighbour distance, with k = 32, k = 128, k = 512}
 		\label{fig:kth}
 	\end{figure}
+	
 	Given those plots, we chose epsilon as shown in table \ref{tab:kth}.
 	It is important to know, however, that this approach failed for reasons described in section \ref{sec:dbscaneval}, so another set of attributes with more interesting results is shown in table \ref{tab:dbscan}. Those values were found by brute force, by attempting, for all k shown in the list before, $\epsilon = 0.1, 0.11, 0.12\dots 0.8$, and visually inspecting the results.\\
 	
@@ -319,6 +328,7 @@
 				256 & 1.36 \\
 				\rowcolor{Gray}
 				512 & 1.64 \\
+				\hline
 			\end{tabular}
 			\caption{K-th nearest neighbours parameters}
 			\label{tab:kth}
@@ -338,6 +348,7 @@
 				256 & 0.38 \\
 				\rowcolor{Gray}
 				512 & 0.48 \\
+				\hline
 			\end{tabular}
 			\caption{Manually found parameters}
 			\label{tab:dbscan}
@@ -350,9 +361,9 @@
 	We then decided to try and find the most dense areas in the data set, by manually checking a lot of configurations. This approach, however, does not find cluster, but it only finds highly populated areas in the data set. 
 	The best results were found when the number of noise points was close to half the total amount in the data set. Those results correspond to the ones found with the parameters shown in table \ref{tab:dbscan} and some example of such clustering is shown in figure \ref{fig:dbscan}.
 	
-	\begin{figure}[H]
+	\begin{figure}[H] 
 		\centering
-		\includegraphics[width=.49\textwidth]{cazzo}\hfill
+		\includegraphics[width=.48\textwidth]{cazzo}\hfill
 		\includegraphics[width=.49\textwidth]{bigboi}\hfill
 		\caption{DBScan clustering results with $\mathbf{minpoints} = 256$ and $\epsilon = 0.38$. Purple colors are noise points}
 		\label{fig:dbscan}
@@ -432,8 +443,7 @@
 				Decision Tree & \specialcell{
 					\textit{criterion} : 'gini', 'entropy'\\
 					\textit{max\_depth} : 2, 5, 10, 15, None\\
-					\textit{min\_samples\_split} : 2, 5, 10, 20\\
-					\textit{min\_samples\_leaf}: 1, 5, 10, 20 }\\
+					\textit{min\_samples\_split} : 2, 5, 10, 20}\\
 				\hline
 				\rowcolor{Gray}
 				AdaBoost & \specialcell{
@@ -454,8 +464,10 @@
 	\subsubsection{Methodology}
 	The first step was to isolate the test set ("test.csv") because this will be used as ground truth to verify the performance of the created models. Then, we cross-validate each model by using as input data, the given training set ("training.csv"). To reflect the percentage of the initial datasets, we decided to split the data in 60-40 (respectively training and validation). For each algorithm of classification, and for each tuple of parameters, we performed 5 Cross-Validation and we averaged the results to circumvent overfitting/underfitting. Do note that to improve the classes imbalance, undersampling and oversampling techniques have been applied.
 	
+	\subsection{Results}
+	The following pictures show the performance obtained by each algorithm during the optimization. Our strategy was to focus more on optimizing Recall and F1 because our goal was to discover "bad buys". The yellow dots/squares represent our best choice of hyper-parameters. Overall the most suitable classifier for this task were decision trees and random forest.
 	
-	\subsubsection{Results: Random Forest}
+	\subsubsection{Random Forest}
 	
 	\begin{figure}[H]
 		\centering
@@ -482,7 +494,7 @@
 	\end{figure}
 	
 	
-	\subsubsection{Results: Decision Tree}
+	\subsubsection{Decision Tree}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=.9\textwidth]{clf_img/DecisionTree.png}
@@ -505,7 +517,7 @@
 	\end{figure}
 	
 	
-	\subsubsection{Results: AdaBoost}
+	\subsubsection{AdaBoost}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=.8\textwidth]{clf_img/Adaboost.png}
@@ -527,31 +539,245 @@
 		\label{fig:hyper_adaUS}
 	\end{figure}
 	
-	\subsubsection{Results: KNN}
+	
+	\subsection{Optimized Algorithms : Results}
+	Once discovered the best settings for each algorithm, we trained those algorithms using their best parameters. As far as the input data concerns, we adopted the whole training set. Afterwards, we verified the performance using the given test set. Table \ref{tab:restest} highlights that the best approach for this task is Random Forest without any class balancing. 
+	
+	\subsection{Decision Tree interpretation}
+	Although the decision tree is not the best method to predict the required variable, its scores are still valid. Note that the following pictures refer to the optimized decision tree that has been trained using a max\_depth equal to 2. The most evident point is that the "WheelType" column owns importance that is more than 80\%. Hence, a row having the "WheelType" attribute equal to "NULL" (greater than 3.5) is a potentially risky affair.
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=.49\textwidth]{clf_img/knn_d_f1.png}
-		\includegraphics[width=.49\textwidth]{clf_img/knn_d_recall.png}
-		\caption{KNN using 'distance'}
-		\label{fig:hyper_knn1}
+		\includegraphics[width=.55\textwidth]{dectree.png}\hfill
+		\includegraphics[width=.45\textwidth]{dectreevar.png}\hfill
+		\caption{Optimized Decision Tree}
+		\label{fig:optdectree}
 	\end{figure}
 	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=.49\textwidth]{clf_img/knn_u_f1.png}
-		\includegraphics[width=.49\textwidth]{clf_img/knn_u_recall.png}
-		\caption{KNN using 'uniform'}
-		\label{fig:hyper_knn2}
-	\end{figure}
+	
+	
+	% Please add the following required packages to your document preamble:
+	% \usepackage{multirow}
+	% \usepackage[table,xcdraw]{xcolor}
+	% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+	\begin{table}[]
+		\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|}
+			\cline{2-11}
+			& \cellcolor[HTML]{656565}{\color[HTML]{FFFFFF} }                                    & \multicolumn{3}{c|}{\cellcolor[HTML]{656565}{\color[HTML]{FFFFFF} \textbf{Precision}}}                                                                            & \multicolumn{3}{c|}{\cellcolor[HTML]{656565}{\color[HTML]{FFFFFF} \textbf{Recall}}}                                                                               & \multicolumn{3}{c|}{\cellcolor[HTML]{656565}{\color[HTML]{FFFFFF} \textbf{F1-Score}}}                                                                             \\ \cline{3-11} 
+			& \multirow{-2}{*}{\cellcolor[HTML]{656565}{\color[HTML]{FFFFFF} \textbf{Accuracy}}} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} 0} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} 1} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} \textit{AVG}} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} 0} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} 1} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} \textit{AVG}} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} 0} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} 1} & \cellcolor[HTML]{9B9B9B}{\color[HTML]{FFFFFF} \textit{AVG}} \\ \hline
+			\rowcolor[HTML]{9AFF99} 
+			\multicolumn{1}{|c|}{\cellcolor[HTML]{9AFF99}Random Forest}                 & \textbf{0.90}                                                                      & 0.90                                             & 0.81                                             & \textbf{0.85}                                               & 0.99                                             & 0.22                                             & \textbf{0.61}                                               & 0.95                                             & 0.35                                             & \textbf{0.65}                                               \\ \hline
+			\rowcolor[HTML]{E6E6E6} 
+			\multicolumn{1}{|c|}{\cellcolor[HTML]{E6E6E6}Random Forest + OverSampling}  & \textbf{0.90}                                                                      & 0.90                                             & 0.78                                             & \textbf{0.84}                                               & 0.99                                             & 0.22                                             & \textbf{0.61}                                               & 0.94                                             & 0.35                                             & \textbf{0.65}                                               \\ \hline
+			\multicolumn{1}{|c|}{Random Forest + UnderSampling}                         & \textbf{0.74}                                                                      & \cellcolor[HTML]{FFFFFF}0.92                     & 0.24                                             & \textbf{0.58}                                               & 0.76                                             & 0.54                                             & \textbf{0.65}                                               & 0.84                                             & 0.33                                             & \textbf{0.58}                                               \\ \hline
+			\rowcolor[HTML]{E6E6E6} 
+			\multicolumn{1}{|c|}{\cellcolor[HTML]{E6E6E6}Decision Tree}                 & \textbf{0.89}                                                                      & 0.90                                             & 0.68                                             & \textbf{0.79}                                               & 0.99                                             & 0.23                                             & \textbf{0.61}                                               & 0.94                                             & 0.35                                             & \textbf{0.64}                                               \\ \hline
+			\multicolumn{1}{|c|}{Decision Tree + OverSampling}                          & \textbf{0.72}                                                                      & \cellcolor[HTML]{FFFFFF}0.92                     & 0.23                                             & \textbf{0.58}                                               & 0.75                                             & 0.54                                             & \textbf{0.64}                                               & 0.83                                             & 0.32                                             & \textbf{0.57}                                               \\ \hline
+			\rowcolor[HTML]{E6E6E6} 
+			\multicolumn{1}{|c|}{\cellcolor[HTML]{E6E6E6}Decision Tree + UnderSampling} & \textbf{0.66}                                                                      & 0.92                                             & 0.20                                             & \textbf{0.56}                                               & 0.66                                             & 0.60                                             & \textbf{0.63}                                               & 0.77                                             & 0.30                                             & \textbf{0.54}                                               \\ \hline
+			\multicolumn{1}{|c|}{AdaBoost}                                              & \textbf{0.89}                                                                      & 0.90                                             & 0.68                                             & \textbf{0.79}                                               & 0.99                                             & 0.23                                             & \textbf{0.61}                                               & 0.94                                             & 0.35                                             & \textbf{0.64}                                               \\ \hline
+			\rowcolor[HTML]{E6E6E6} 
+			\multicolumn{1}{|c|}{\cellcolor[HTML]{E6E6E6}AdaBoost + OverSampling}       & \textbf{0.89}                                                                      & 0.90                                             & 0.68                                             & \textbf{0.79}                                               & 0.99                                             & 0.23                                             & \textbf{0.61}                                               & 0.94                                             & 0.35                                             & \textbf{0.64}                                               \\ \hline
+			\multicolumn{1}{|c|}{AdaBoost + OverSampling}                               & \textbf{0.89}                                                                      & 0.90                                             & 0.68                                             & \textbf{0.79}                                               & 0.99                                             & 0.23                                             & \textbf{0.61}                                               & 0.94                                             & 0.35                                             & \textbf{0.64}                                               \\ \hline
+		\end{tabular}
+		\caption{Results of the optimized algorithm over the test set}
+		\label{tab:restest}
+	\end{table}
+	
 	
 	
 	\section{Pattern Mining}
 	\label{sec:patternmining}
 	In this section we try to find the best pattern and association rules in order to better understand the information hidden in the dataset. 
 	
+	\subsection{Attribute selection and binning}
+	
+	At first, we selected the most informative attributes which are: VehicleAge, Make, Model, Trim, Color, WheelType, VehOdo, AAAP, BYRNO, VNST, VehBCost, WarrantyCost.
+	\\ We chose to use these attributes because most of them are coherent with the data used in the previous analysis.\\  
+	In order to perform a better pattern mining, we discretized the numerical attributes 'VehOdo', 'VehBCost', 'WarrantyCost', 'AAAP', 'VehicleAge and then, we transformed numerical attributes into string.\\
+	Formerly we plotted their distribution, and in accordance with the distribution we chose to split the attributes into five range.\\  
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=.49\textwidth]{bin1.png}
+		\includegraphics[width=.49\textwidth]{bin2.png}
+		\includegraphics[width=.49\textwidth]{bin3.png}
+		\includegraphics[width=.49\textwidth]{bin4.png}
+		\caption{Distribution of numerical attributes}
+		\label{fig:hyper_rf}
+	\end{figure}
+	
+	On the top left we bins = [df.VehBCost.min() - 1,5000, 7000, 8000, 10000, df.VehBCost.max()]
+	down left bins = [df.WarrantyCost.min() - 1,700, 1200, 1800, 2600, df.WarrantyCost.max()]
+	top right bins = [df.AAAP.min() - 1, 3000, 6000, 8000, 10000, df.AAAP.max()]
+	right down bins = [df.VehOdo.min() - 1,40000, 60000, 80000, 100000, df.VehOdo.max()]
+	
+	\subsection{Frequent itemsets extraction}
+	
+	We ran the Apriori algorithm for frequent itemsets extraction based on the attributes selected. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=.49\textwidth]{support.png}
+		\caption{Frequency plof of itemsets with different value of support}
+		\label{fig:hyper_rf_us}
+	\end{figure}
+	
+	\subsubsection{Frequent maximal itemset}
+	For frequent  maximal itemsets we used a minsupport equals to eight , selecting only sets that have 3 elements.
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{c|ccccccc}
+			\hline
+			Pattern & Support \\
+			\hline
+			\rowcolor{Gray}
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Age:[4, 6)') &  6798\\
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Covers') &  6653\\
+			\rowcolor{Gray}
+			'AAAP:(3000.0, 6000.0]', 'Age:[4, 6)', 'Covers') &  6458\\
+			'Age:[4, 6)', 'Odo:(60000, 80000]', 'Alloy') &  6392\\
+			\rowcolor{Gray}
+			'AAAP:(3000.0, 6000.0]', 'Age:[4, 6)', 'Odo:(60000, 80000]') &  6222\\
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Odo:(60000, 80000]')  & 5936\\
+			\rowcolor{Gray}
+			'AAAP:(3000.0, 6000.0]', 'Age:[4, 6)', 'Alloy') &  5794\\
+			'WarrCost:(1200, 1800]', 'Odo:(60000, 80000]', 'Alloy') & 5641\\
+			\rowcolor{Gray}
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Alloy') &  5410\\
+			'VehBCost:(5000.0, 7000.0]', 'Covers', 'Odo:(60000, 80000]') & 5373\\
+		\end{tabular}
+		\caption{Number of maximal itemsets with support equals to 8}
+	\end{table}
+	
+	\subsubsection{Frequent closed itemsets}
+	For frequent itemsets we used a minsupport equal to 11\%, selecting only sets that have 3 elements
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{c|ccccccc}
+			\hline
+			Pattern & Support \\
+			\hline
+			\rowcolor{Gray}
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Age:[4, 6)' & 6798\\
+			(('VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Covers' & 6653\\
+			\rowcolor{Gray}
+			(('AAAP:(3000.0, 6000.0]', 'Age:[4, 6)', 'Covers' &  6458\\
+			(('Age:[4, 6)', 'Odo:(60000, 80000]', 'Alloy' &  6392\\
+			\rowcolor{Gray}
+			(('AAAP:(3000.0, 6000.0]', 'Age:[4, 6)', 'Odo:(60000, 80000]' &  6222\\
+			(('VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]', 'Odo:(60000, 80000]' & 5936\\
+		\end{tabular}
+		\caption{Number of closed itemsets with support equals to 10}
+	\end{table}
+	
+	\subsubsection{Frequent itemsets}
+	
+	For frequent itemsets we used a minsupport equal to 30\% ,selecting only sets that have 3 elements. The list of the frequent itemsets is largely the same with the closed ones, because the  it is a superset of the latter one. (DA RISCRIVERE). 
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{c|ccccccc}
+			\hline
+			Pattern & Support \\
+			\hline
+			\rowcolor{Gray}
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]',  'Age:[4, 6)') & 6798 \\
+			'VehBCost:(5000.0, 7000.0]', 'AAAP:(3000.0, 6000.0]' ,  'Covers'  & 6653 \\
+			\rowcolor{Gray}
+			'AAAP:(3000.0, 6000.0]', 'Age:[4, 6)', 'Covers' & 6458) \\
+		\end{tabular}
+		\caption{Number of maximal itemsets with support equals to 11}
+	\end{table}
+	
+	\subsection{Association Rules}
+	In this section we discuss the most interesting association rules obtained with the Apriori algorithm. 
+	We decided to extract these rules considering only the frequent itemsets with a length major or equal to 3. 
+	The association rules are shown in the following tables.  
+	
+	\subsubsection{Association Rules for missing value replacement}
+	
+	Given the frequent itemetes founds in Section, we decided to use the rules that best represent car's auction.\\
+	For this reason, we use the rules characterized by greater support and best lift value.
+	
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|cc|cc|}
+			\hline
+			\textbf{RHS} & \textbf{LHS} & \textbf{Confidence} & \textbf{Lift} \\
+			\hline
+			\rowcolor{Gray}
+			Alloy & FORD  & 0.767 & 1.523 \\
+			Covers & Age:[2, 4)', 'VehBCost:(5000.0, 7000.0]  & 0.687 & 1.501 \\
+			\rowcolor{Gray}
+			Alloy &  ('Odo:(80000, 100000]', 'WarrCost:(1200, 1800]') &  0.678 & 1.346 \\
+			\hline
+		\end{tabular}
+		\caption{Most significant association rules for missing value replacement}
+	\end{table}
+	
+	
+	
+	
+	
+	\subsubsection{Association Rules for predicting target variable}
+	To predict the target variable we decided to generate a new data set in order to balance the number of 'badbuy' and 'goodbuy' with the aim to produce not only association rules for 'goodbuy', which are the majority of attributes, but also for 'badbuy'.\\
+	We selected the most significant rules  by using support equals to 10 and confidence of 0.67 and then, we selected rules with  a higher confidence and lift as we can see in the Table 8.\\
+	By using these rules we try to predict the target variable in the data set obtaining the 83\% of accuracy.\\
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=.49\textwidth]{rules.png}
+		\caption{Frequency plof of rules with different value of confidence}
+		\label{fig:hyper_rf_us}
+	\end{figure}
+	
+	
+	
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|cc|cc|}
+			\hline
+			\textbf{RHS} & \textbf{LHS} & \textbf{Confidence} & \textbf{Lift} \\
+			\hline
+			\rowcolor{Gray}
+			GoodBuy & AAAP:(6000.0, 8000.0], Covers'  & 0.701 & 1.402 \\
+			GoodBuy & Age:[2, 4), Covers' & 0.686 & 1.373 \\
+			\rowcolor{Gray}
+			GoodBuy &  CHRYSLER, Covers &  0.647 & 1.295 \\
+			BadBuy &  VehBCost:(224.0, 5000.0], AAAP:(3000.0, 6000.0] & 0.613 & 1.226\\
+			\hline
+		\end{tabular}
+		\caption{Most significant association rules for prediction the target variable}
+	\end{table}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{cc|cc}
+			\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{1}{c}{\textbf{Predicted Value}} \\ 
+			\multicolumn{1}{c}{} & 
+			\multicolumn{1}{c|}{} & 
+			\multicolumn{1}{c}{\textbf{GoodBuy}} & 
+			\multicolumn{1}{c}{\textbf{BadBuy}} \\ \hline
+			\multirow{2}{*}{\rotatebox{1}{\textbf{Actual Value}}}
+			& \textbf{GoodBuy}  & 47548 & 3629   \\ 
+			& \textbf{BadBuy}  & 6295  & 912 \\ \hline
+		\end{tabular}
+		\caption{Confusion matrix obtained from the application of the association rulss for the target variable prediction }
+	\end{table}
+	
+	
+	
+	
+	
+	
 	\section{Conclusion}
-	buongiornissimo!!!! kafffeeeeeee!??!???!?!??!
+	
+	Chi ha tolto il cafféééééééé???
 	
 	
 \end{document}
