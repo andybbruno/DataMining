@@ -75,7 +75,7 @@
 	Finally, by analyzing all the attributes, we noticed that \emph{Acquisition Type} and \emph{Kickdate} are not present in the dataset, although they are declared in the dictionary.
 	
 	\subsection{Variables transformation and elimination of redundant variables}
-	We opted to specialize the attributes \emph{Model} and \emph{SubModel} because they contained too much information. As an example, we found a row having the \emph{Model} attribute set as follows: EQUINOX FWD V6 3.4L. 
+	We opted to rectify the attributes \emph{Model} and \emph{SubModel} because they contained too much information. As an example, we found a row having the \emph{Model} attribute set as follows: EQUINOX FWD V6 3.4L. 
 	
 	It's quite clear that the dataset needs a reorganization because, as it is, it does not even respect the first normal form. Hence, we reorganised this information into five different attributes as explained hereafter:
 	\begin{itemize}
@@ -128,7 +128,7 @@
 	The main columns with missing values were the 8 \emph{MMR} prices, \emph{WheelType, WheelTypeID} and \emph{Trim}.
 	We handled those cases with the following approaches:
 	\begin{itemize}
-		\item \emph{Trim} ($\sim 2500$ missing): we treated \emph{Trim} like the attributes discussed before. Particularly, we adopted the most frequent \emph{Trim} for a given model (or Make when given information was unavailable). In case both pieces of information were missing, we used \emph{bas} as it is the mode over all the dataset.
+		\item \emph{Trim} ($\sim 2500$ missing): we treated \emph{Trim} like the attributes discussed before. Particularly, we adopted the most frequent \emph{Trim} for a given model (or Make when given information was unavailable). In case both information was missing, we used \emph{bas} as it is the mode over all the dataset.
 		\item \emph{WheelType} ($\sim 3500$ missing): We noticed that if the value of \emph{WheelTypeID} is missing, then the chance to be a bad buy highly increases (discussed in Section \ref{sec:attrDistr}, and shown in Figure \ref{fig:badbuys}). Assuming that this behaviour is meaningful, we chose to fill missing values with \emph{Unknown} and so adding a category to the attribute. Conclusively, the possible values for the \emph{WheelType} attribute became \emph{Alloy}, \emph{Covers}, \emph{Special} and \emph{Unknown}. We instead decided to drop \emph{WheelTypeID} column as it is redundant.
 		\item \emph{MMR prices} ($\sim 500$ per attribute missing): we decided to handle entries with $\mathbf{price} = 0$ as if they were missing values. After that, we imputed those values using MICE (Multiple Imputation by Chained Equations) \footnote{Azur MJ, Stuart EA, Frangakis C, Leaf PJ. Multiple imputation by chained equations: what is it and how does it work?}. The new distribution is almost identical to the previous one, but of course, there is no more a peak of zeros. 
 	\end{itemize}
@@ -184,7 +184,7 @@
 	\end{figure}
 	
 	
-	Afterwards, we inspected the variable \emph{IsBadBuy}. In Figure \ref{fig:badbuys} (on the left), we first put \emph{WarrantyCost} and \emph{VehOdo} in relationship. The most interesting point was that bad purchases are more frequent in less dense areas. Whereas when we dealt with \emph{WheelType} (on the right), we noticed that the number of bad buys is huge whenever the information is lacking (corresponding to the column labelled as \emph{Unknown}).
+	Afterwards, we inspected the variable \emph{IsBadBuy}. In Figure \ref{fig:badbuys} (on the left), we first put \emph{WarrantyCost} and \emph{VehOdo} in relation. The most interesting point was that bad purchases are more frequent in less dense areas. Whereas when we dealt with \emph{WheelType} (on the right), we noticed that the number of bad buys is huge whenever the information is lacking (corresponding to the column labelled as \emph{Unknown}).
 	
 	
 	\begin{figure}[H]
@@ -225,7 +225,7 @@
 	
 	\begin{table}[H]
 		\centering
-		\begin{tabular}{|c|c|}
+		\begin{tabular}{c|c}
 			\hline
 			& Attributes set \\
 			\hline
@@ -257,9 +257,9 @@
 		\caption{Plot SSE of Attribute set 3 (left) and 4 (right).}
 		\label{fig:KmeansSSE}
 	\end{figure}
-	We noticed that the SSE curves for all the data frames share a strong similarity (same curvature, but different SSE). Indeed their behaviours are very close to the ones shown in Figure \ref{fig:KmeansSSE}.
-	Then we discovered ,using the \emph{knee method}, that the best value for all the data frames was \emph{k = 6}. A comprehensive analysis of all the data frames is shown in Table \ref{tab:SSESilu}. In particular, the lowest SSE is by far the one of data frame 3.\\
-	However, we decided to discard this result since the 6 clusters found by the algorithm were essentially groups of cars in different price ranges. We decided that the best clustering, both semantically and parameter wise, was DF4 (the one taking in consideration \emph{WarrantyCost, VehOdo and VehBCost}).
+	We noticed that the SSE curves for all the data frames share a strong similarity (same curvature, but different SSE). Indeed their behaviours are very close to the ones shown in Figure \ref{fig:KmeansSSE}.\\
+	Then, we discovered ,using the \emph{knee method}, that the best value for all the data frames was \emph{k = 6}. A comprehensive analysis of all the data frames is shown in Table \ref{tab:SSESilu}. In particular, the lowest SSE is by far the one of data frame 3.\\
+	However, we decided to discard this result since the 6 clusters found by the algorithm were essentially groups of cars in different price ranges. We decided that the best clustering, both semantically and parameter wise, was DF4 (the one taking into consideration \emph{WarrantyCost, VehOdo and VehBCost}).
 	
 	\begin{table}[H]
 		\centering
@@ -301,8 +301,8 @@
 	The clusters descriptions for Figure \ref{fig:centroid} are:
 	\begin{enumerate}
 		\item $\mathbf{centroid}: (6\,500,  1\,900,  88\,000)$: cars with very high odometer reading and pretty high warranty cost (purple cluster). Those cars are sold for a price which is in line with the mean of the prices.
-		\item $\mathbf{centroid}: (6\,800,  850,  48\,000)$: cars which are pretty new , with low  reading and low warranty cost (light blue cluster). As expected their cost is slightly above average.
-		\item $\mathbf{centroid}: (6\,400,  1\,000,  83\,000)$: cars with high odometer reading but low warranty cost (azure cluster). Those cars are probably considered to be solid (low outage risk) even after years of use, and are sold at a normal price.
+		\item $\mathbf{centroid}: (6\,800,  850,  48\,000)$: pretty new cars, with low reading and low warranty cost (light blue cluster). As expected their cost is slightly above average.
+		\item $\mathbf{centroid}: (6\,400,  1\,000,  83\,000)$: cars with high odometer reading but low warranty cost (azure cluster). Those cars are probably considered to be solid (low outage risk) even after years of use and are sold at a normal price.
 		\item $\mathbf{centroid}: (6\,700,  1\,000,  65\,000)$: cars with low warranty cost and average odometer (aquamarine cluster). There is not much to say about this cluster, as it represents the average car.
 		\item $\mathbf{centroid}: (7\,300,  1\,700,  73\,000)$: Cars with high warranty cost, but average odometer reading (green cluster). This is one of the most interesting clusters, as it shows that relatively high-risk cars are sold at a price which is higher than expected (considering high warranty cost as a sign of risk).
 		\item $\mathbf{centroid}: (5\,300,  4\,700,  77\,000)$: Exceptionally high warranty cost, high odometer reading (yellow cluster). This cluster is the least populated and the most sparse one. It homes those very risky buys, and in addition to that, cars in this cluster are also pretty dated. They are sold, as expected, at a very low price. 
@@ -383,7 +383,7 @@
 	
 	\subsubsection{Characterization and interpretation of the obtained clusters}
 	\label{sec:dbscaneval}
-	First, we are going to analyze the results with parameters shown in Table \ref{tab:kth}. The algorithm produced as a result a single cluster containing all the points in the data set, with the exception of $\sim 100$ elements, which were labelled as noise points. The main reason was that the data forms one big cloud of points, with different density distributions inside. This kind of behaviour represents the conditions under which DB scan performs worst, and this is the reason why the \emph{k-th} neighbour distance approach failed. \\
+	First, we are going to analyze the results with parameters shown in Table \ref{tab:kth}. The algorithm produced as a result a single cluster containing all the points in the data set, except for $\sim 100$ elements, which were labelled as noise points. The main reason was that the data forms one big cloud of points, with different density distributions inside. This kind of behaviour represents the conditions under which DB scan performs worst, and this is the reason why the \emph{k-th} neighbour distance approach failed. \\
 	We then decided to try and find the densest areas in the data set, by manually checking a lot of parameters configurations. This approach, however, does not find any cluster, but it only finds highly populated areas in the data set. 
 	The best results were found when the number of noise points was close to half the total amount in the data set. Those results correspond to the ones found with the parameters shown in Table \ref{tab:dbscan} and some example of such clustering is shown in Figure \ref{fig:dbscan}.
 	
@@ -409,7 +409,7 @@
 	
 	\subsubsection{Algorithms and Dendrograms}
 	\label{sec:hier}
-	We decided to perform hierarchical clustering with Euclidean and Manhattan distance as metrics, and to perform, for each of those metrics ward, single, complete and average linkages (with the exception of Manhattan distance with ward linkage, being it not allowed).\\
+	We decided to perform hierarchical clustering with Euclidean and Manhattan distance as metrics, and to perform, for each of those metrics ward, single, complete and average linkages (except for Manhattan distance with ward linkage, being not allowed).\\
 	For each one of those results, we attempted clustering with $\mathbf{numberOfCluster} \in [2, 10]$, and computed the silhouettes for all the results.
 	Figure \ref{fig:silu} shows the silhouettes for the results found with all the algorithms on data frame 2 (the same used for KMeans and DBScan).
 	\begin{figure}[]
@@ -419,7 +419,7 @@
 		\caption{Silhouettes for all algorithms and all metrics on data frame 2}
 		\label{fig:silu}
 	\end{figure}
-	From those plot, we notice a tendency for the silhouette to drop when the number of cluster passes from 4 to 5. We then decide to perform clustering with 4 clusters.
+	From those plots, we notice a tendency for the silhouette to drop when the number of cluster passes from 4 to 5. We then decide to perform clustering with 4 clusters.
 	Given that, we visually inspected the results and found that the only ones with interesting clusters are:
 	\begin{itemize}
 		\item Euclidean metric and ward linkage
@@ -444,7 +444,7 @@
 	
 	\subsubsection{Best clustering approach and comparison of the clustering obtained}
 	In conclusion, the best clustering results were found in the circumstances shown in Section \ref{sec:hier}. The results, semantically speaking, highly resemble the ones found using KMeans.\\ Both results find a cluster in the high warranty cost cars (displayed in both Figure \ref{fig:hier} and in Figure \ref{fig:centroid} for KMeans, where the highlighted cluster is displayed in yellow).\\
-	The main difference is in the way that points in the "big cloud" are assigned a cluster. The reasoning, anyway, is really similar to the one made in Section \ref{sec:clusterdescr} regarding KMeans, so we refer to that one.
+	The main difference is in the way that points in the "big cloud" are assigned a cluster. The reasoning, anyway, is similar to the one made in Section \ref{sec:clusterdescr} regarding KMeans, so we refer to that one.
 	
 	
 	
@@ -587,9 +587,9 @@
 		\caption{Optimized Decision Tree Features Importance}
 		\label{fig:optdectreefeat}
 	\end{wrapfigure}
-	Note that the following pictures refer to the optimized decision tree that has been trained using a max\_depth equal to five (here we're showing only four levels due to lack of space).
+	Note that the following pictures refer to the optimized decision tree that has been trained using a max\_depth equal to five (here in Figure \ref{fig:optdectree} we're showing only four levels due to lack of space).
 	
-	Surprisingly enough, the \emph{WheelType} column owns importance that is more than 70\%. Hence, a row having the \emph{WheelType} attribute equal to "NULL" (greater than 3.5) is a potentially risky affair. The second leading variable is the type of auction. In particular, cars sold through "ADESA" (smaller than 1.5) auctions point entirely towards "Bad Buy" leaves. Furthermore, the Gini coefficient (0.412) suggests that this split is almost useless because the preponderant feature is still the previous one. As far as the red branch concerned, there is just one blue leaf. This latter represents the category of cars with a final price above 12260\$ and age less than 4.5.
+	Surprisingly enough, the \emph{WheelType} column owns importance that is more than 70\%. Hence, a row having the \emph{WheelType} attribute equal to "NULL" (greater than 3.5) is a potentially risky affair. The second leading variable is the type of auction. In particular, cars sold through "ADESA" (smaller than 1.5) auctions point entirely towards "Bad Buy" leaves. Furthermore, the Gini coefficient (0.412) suggests that this split is almost useless because the preponderant feature is still the previous one. As far as the red branch concerned (\emph{WheelType} less than 3.5), there is just one blue leaf. This latter represents the category of cars with a final price above 12260 \$ and age less than 4.5.
 	
 	
 	
@@ -602,26 +602,20 @@
 	\end{figure}
 	
 	\subsection{Optimized Random Forest: Interpretation}
-	AAAAA
-	
-	
-	AAAAA
-	
+	Similarly to the decision tree, the random forest algorithm put at the top of the ranking the variable \emph{WheelType}.
 	\begin{wrapfigure}{r}{0.4\textwidth}
 		\centering
 		\includegraphics[width=.4\textwidth]{rfw.png}
 		\caption{Optimized Random Forest Features Importance}
-		\label{fig:optdectree}
+		\label{fig:optrfw}
 	\end{wrapfigure}
+	Hence, our thesis about the weak influence of the attribute \emph{Auction} is confirmed, indeed in Figure \ref{fig:optrfw}, it neither appears.
 	
-	AAAAA
+	What we expected to see in the decision tree was the presence of the prices within the ranking. Here in Random Forest, they represent about 20\% of the importance, and of course, it makes sense. 
 	
+	A weird phenomenon is the purchase date of the car as 6th most significant attribute, as well as the engine volume in the 7th position. 
 	
-	AAAAA
-	
-	
-	AAAAA
-	
+	In general, this further specialization of the Random Forest (respect to Decision Tree) leads its optimized algorithm to reach better performance, at least in recognising dangerous affairs. The Recall here is slightly better, for this reason, we chose Random Forest as the best algorithm for this task.
 	
 	\newpage
 	\section{Pattern Mining}
@@ -645,8 +639,8 @@
 		\label{fig:hyper_rf}
 	\end{figure}
 	
-	In the Figure \ref{fig:hyper_rf}, starting from the left side, we have the distribution of the attribute \emph{VehBCost} on the top (1,5000, 7000, 8000, 10000), and the distribution of \emph{WarrantyCost} on the bottom (1,700, 1200, 1800, 2600). 
-	To the right side, the Figure shows the distribution of \emph{AAAP} on the top (1, 3000, 6000, 8000, 10000) and lastly, the attribute \emph{VehOdo} on the bottom (1,40000, 60000, 80000, 100000). 
+	In Figure \ref{fig:hyper_rf}, starting from the left side, we have the distribution of the attribute \emph{VehBCost} on the top (1,5000, 7000, 8000, 10000), and the distribution of \emph{WarrantyCost} on the bottom (1,700, 1200, 1800, 2600). 
+	To the right side, the figure shows the distribution of \emph{AAAP} on the top (1, 3000, 6000, 8000, 10000) and lastly, the attribute \emph{VehOdo} on the bottom (1,40000, 60000, 80000, 100000). 
 	
 	\subsection{Frequent itemsets extraction}
 	
@@ -701,7 +695,7 @@
 		\label{tab:boh}
 	\end{table}
 	
-	From the generated itemsets we can see that cars which are not new but neither old, are usually sold at a slightly more expensive price compared to the average price at the auction (Pattern 1 in the Table, which is the one with highest frequency). The mileage on the vehicle is usually between 60000 and 80000 (Pattern 5) for cars that have an average price between 3000.0 and 6000.0 and age between 4 and 6.\\ %rivedere questa frase
+	From the generated itemsets we can see that cars which are not new but neither old, are usually sold at a slightly more expensive price compared to the average price at the auction (Pattern 1 in the Table, which is the one with the highest frequency). The mileage on the vehicle is usually between 60000 and 80000 (Pattern 5) for cars that have an average price between 3000.0 and 6000.0 and age between 4 and 6.\\ %rivedere questa frase
 	The attributes in these patterns are very meaningful since they are the same that give us the best results in clustering analysis section. 
 	
 	
@@ -712,7 +706,7 @@
 	
 	\begin{figure}[]
 		\centering
-		\includegraphics[width=.4\textwidth]{rules.png}\hspace{1cm}
+		\includegraphics[width=.43\textwidth]{rules.png}\hspace{1cm}
 		\includegraphics[width=.4\textwidth]{AbusivismoEdilizio.png}
 		\caption{On the lefthand side, frequency plot of rules by varying the confidence value. On the righthand side, a scatter plot of support, lift and confidence}
 		\label{fig:hyper_rf}
@@ -771,7 +765,7 @@
 	\end{table}
 	
 	
-	\subsubsection{Association Rules for predicting target variable}
+	\subsubsection{Association Rules for predicting the target variable}
 	To predict the target variable we decided to perform \emph{undersampling} in order to balance the number of 'BadBuy' and 'GoodBuy' for producing not only association rules for 'GoodBuy', which are the majority of attributes, but also for 'BadBuy'.\\
 	We selected the most significant rules by using $\mathbf{support}=10$ and $\mathbf{confidence} = 0.67$ and then, we selected rules with a higher confidence and lift.\\
 	We used those rules to predict the target variable, and whenever they did not match any element in the data frame, we decided to predict them as 'GoodBuy', since it represents the majority class. \\
@@ -828,10 +822,8 @@
 	
 	For the analysis of this car auctions data set, we used different data mining techniques, trying to understand whether a deal is a good transaction or not. \\
 	In the \emph{Data Understanding} section, we addressed issues related to data semantics and quality, like fixing missing values and deleting redundant variables. Our main goals were to clean up the \emph{Model} variable (which we believed to be one of the deciding factors for the target variable), to reduce the dimensionality of highly correlated variables and have a basic understanding of variable distributions.\\
-	In the \emph{Clustering} section, we concentrated our focus on numeric attributes (prices, odometer and warranty cost) to find groups of similar points in the data set. We found, as an obstacle, the main cluster of points of various densities. We found KMeans and Hierarchical clustering to be the best in performance, and attempted to describe the meaning of given results.\\
-	In the \emph{Classification} phase, we tried to predict the value of the target variable, namely \emph{IsBadBuy}. We performed 5-fold cross-validation with various classifiers and configurations, attempting also both \emph{undersampling} and \emph{oversampling}. We optimized the parameters for \emph{F1 score} and obtained $\mathbf{F1}_{avg} = 0.65$ on the test set with the best classifier. The accuracy is very high, but the classifier does not obtain better results because of the recall on the negative class (the minority one).  \\
+	In the \emph{Clustering} section, we concentrated our focus on numeric attributes (prices, odometer and warranty cost) to find groups of similar points in the data set. We found, as an obstacle, the main cluster of points of various densities. We found KMeans and Hierarchical clustering to be the best in performance, and attempted to describe the meaning of the given results.\\
+	In the \emph{Classification} phase, we tried to predict the value of the target variable, namely \emph{IsBadBuy}. We performed 5-fold cross-validation with various classifiers and configurations, attempting also both \emph{undersampling} and \emph{oversampling}. We optimized the parameters for the \emph{F1 score} and obtained $\mathbf{F1}_{avg} = 0.65$ on the test set with the best classifier. The accuracy is very high, but the classifier does not obtain better results because of the recall on the negative class (the minority one).  \\
 	Lastly, in the \emph{Pattern Mining} phase, we obtained some interesting rules by discarding highly imbalanced categorical attributes. We were able to obtain decent results both when attempting to predict the target variable and when replacing the missing values.
 	
 \end{document}
-
-
