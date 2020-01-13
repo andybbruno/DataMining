@@ -47,12 +47,12 @@ fig.add_trace(go.Scatter(
 fig.update_layout(
     title="FANTASTIC PLOT",
     xaxis=dict(
-        title="VehBCost",
+        title="WarrantyCost",
         type='log'
     ),
 
     yaxis=dict(
-        title="WarrantyCost",
+        title="VehBCost",
     )
 )
 fig.show()
