@@ -28,7 +28,7 @@ n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range
 fig.add_trace(go.Scatter(
     x=x,
     y=y,
-    line = dict(dash='dash', width=4)
+    line = dict(width=8)
 ))
 
 fig.add_trace(go.Scatter(
@@ -38,10 +38,10 @@ fig.add_trace(go.Scatter(
     error_y=dict(
         type='data',
         array=dy,
-        color='gray',
+        color='lightgray',
         thickness=3,
         width=3),
-    marker=dict(color='black', size=12)
+    marker=dict(color='black', size=15)
 ))
 
 
@@ -73,7 +73,7 @@ for i, txt in enumerate(n):
             go.layout.Annotation(
                 xref='x', yref='y',
                 ax=75,
-                ay=-75,
+                ay= ((i%2)+1) * -75,
                 x=x.iloc[i],
                 y=y.iloc[i],
                 text=txt,
@@ -82,6 +82,8 @@ for i, txt in enumerate(n):
 
         
 fig.update_layout(
+    font=dict(size=20),
+    template='plotly_white',
     showlegend=False, 
     title={
         'text': "RANDOM FOREST F1",
@@ -107,7 +109,7 @@ n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range
 fig.add_trace(go.Scatter(
     x=x,
     y=y,
-    line = dict(color='orangered', dash='dash', width=4)
+    line = dict(color='orangered',  width=8)
 ))
 
 fig.add_trace(go.Scatter(
@@ -117,10 +119,10 @@ fig.add_trace(go.Scatter(
     error_y=dict(
         type='data',
         array=dy,
-        color='gray',
+        color='lightgray',
         thickness=3,
         width=3),
-    marker=dict(color='black', size=12)
+    marker=dict(color='black', size=15)
 ))
 
 
@@ -152,7 +154,7 @@ for i, txt in enumerate(n):
             go.layout.Annotation(
                 xref='x', yref='y',
                 ax=75,
-                ay=-75,
+                ay= ((i%2)+1) * -75,
                 x=x.iloc[i],
                 y=y.iloc[i],
                 text=txt,
@@ -161,6 +163,8 @@ for i, txt in enumerate(n):
 
         
 fig.update_layout(
+    font=dict(size=20),
+    template='plotly_white',
     showlegend=False, 
     title={
         'text': "RANDOM FOREST RECALL",
@@ -193,7 +197,7 @@ n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range
 fig.add_trace(go.Scatter(
     x=x,
     y=y,
-    line = dict(dash='dash', width=4)
+    line = dict( width=8)
 ))
 
 fig.add_trace(go.Scatter(
@@ -203,10 +207,10 @@ fig.add_trace(go.Scatter(
     error_y=dict(
         type='data',
         array=dy,
-        color='gray',
+        color='lightgray',
         thickness=3,
         width=3),
-    marker=dict(color='black', size=12)
+    marker=dict(color='black', size=15)
 ))
 
 
@@ -238,7 +242,7 @@ for i, txt in enumerate(n):
             go.layout.Annotation(
                 xref='x', yref='y',
                 ax=75,
-                ay=-75,
+                ay= ((i%2)+1) * -75,
                 x=x.iloc[i],
                 y=y.iloc[i],
                 text=txt,
@@ -247,6 +251,8 @@ for i, txt in enumerate(n):
 
         
 fig.update_layout(
+    font=dict(size=20),
+    template='plotly_white',
     showlegend=False, 
     title={
         'text': "RANDOM FOREST OVERSAMPLING F1",
@@ -273,7 +279,7 @@ n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range
 fig.add_trace(go.Scatter(
     x=x,
     y=y,
-    line = dict(color='orangered', dash='dash', width=4)
+    line = dict(color='orangered',  width=8)
 ))
 
 fig.add_trace(go.Scatter(
@@ -283,10 +289,10 @@ fig.add_trace(go.Scatter(
     error_y=dict(
         type='data',
         array=dy,
-        color='gray',
+        color='lightgray',
         thickness=3,
         width=3),
-    marker=dict(color='black', size=12)
+    marker=dict(color='black', size=15)
 ))
 
 
@@ -318,7 +324,7 @@ for i, txt in enumerate(n):
             go.layout.Annotation(
                 xref='x', yref='y',
                 ax=75,
-                ay=-75,
+                ay= ((i%2)+1) * -75,
                 x=x.iloc[i],
                 y=y.iloc[i],
                 text=txt,
@@ -327,6 +333,8 @@ for i, txt in enumerate(n):
 
         
 fig.update_layout(
+    font=dict(size=20),
+    template='plotly_white',
     showlegend=False, 
     title={
         'text': "RANDOM FOREST OVERSAMPLING RECALL",
@@ -353,7 +361,7 @@ n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range
 fig.add_trace(go.Scatter(
     x=x,
     y=y,
-    line = dict(dash='dash', width=4)
+    line = dict(width=8)
 ))
 
 fig.add_trace(go.Scatter(
@@ -363,10 +371,10 @@ fig.add_trace(go.Scatter(
     error_y=dict(
         type='data',
         array=dy,
-        color='gray',
+        color='lightgray',
         thickness=3,
         width=3),
-    marker=dict(color='black', size=12)
+    marker=dict(color='black', size=15)
 ))
 
 
@@ -398,7 +406,7 @@ for i, txt in enumerate(n):
             go.layout.Annotation(
                 xref='x', yref='y',
                 ax=75,
-                ay=-75,
+                ay= ((i%2)+1) * -75,
                 x=x.iloc[i],
                 y=y.iloc[i],
                 text=txt,
@@ -407,6 +415,8 @@ for i, txt in enumerate(n):
 
         
 fig.update_layout(
+    font=dict(size=20),
+    template='plotly_white',
     showlegend=False, 
     title={
         'text': "RANDOM FOREST UNDERSAMPLING F1",
@@ -433,7 +443,7 @@ n = [str(round(y.iloc[j],3))[:5] + "\n+/- " + str(dy.iloc[j])[:5] for j in range
 fig.add_trace(go.Scatter(
     x=x,
     y=y,
-    line = dict(color='orangered', dash='dash', width=4)
+    line = dict(color='orangered',  width=8)
 ))
 
 fig.add_trace(go.Scatter(
@@ -443,10 +453,10 @@ fig.add_trace(go.Scatter(
     error_y=dict(
         type='data',
         array=dy,
-        color='gray',
+        color='lightgray',
         thickness=3,
         width=3),
-    marker=dict(color='black', size=12)
+    marker=dict(color='black', size=15)
 ))
 
 
@@ -478,7 +488,7 @@ for i, txt in enumerate(n):
             go.layout.Annotation(
                 xref='x', yref='y',
                 ax=75,
-                ay=-75,
+                ay= ((i%2)+1) * -75,
                 x=x.iloc[i],
                 y=y.iloc[i],
                 text=txt,
@@ -487,6 +497,8 @@ for i, txt in enumerate(n):
 
         
 fig.update_layout(
+    font=dict(size=20),
+    template='plotly_white',
     showlegend=False, 
     title={
         'text': "RANDOM FOREST UNDERSAMPLING RECALL",

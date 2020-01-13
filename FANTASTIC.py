@@ -25,7 +25,7 @@ y = [item for sublist in y.values.tolist() for item in sublist]
 
 z = list(dict(df.groupby(['Make']).size()).values())
 z = [float(i)/100 for i in z]
-# z = [50 for i in z]
+z = [3 if i < 3 else i for i in z]
 names = list(dict(df.groupby(['Make']).size()).keys())
 
 # Create figure
@@ -39,8 +39,8 @@ fig.add_trace(go.Scatter(
     textposition="middle center",
     marker=dict(
         size=z,
-        color=[random.randint(0, 6000) for i in range(len(z))],
-        colorscale="Rainbow"
+        color=[random.randint(0, 100) for i in range(len(z))],
+        colorscale="tealrose"
     )
 ))
 
