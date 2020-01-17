@@ -1,6 +1,9 @@
 # Data Mining 2019/2020 - Unipi
 Competition for the Data Mining course
 
+[Here](https://www.kaggle.com/c/data-mining-20192020-unipi/leaderboard)
+our results on Kaggle.
+
 ## Task
 - The challenge of this competition is to predict if the car purchased at the Auction is a good / bad buy.
 - All the variables in the data set are defined in the file Carvana_Data_Dictionary.txt
